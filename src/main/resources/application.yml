@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: menuguru
+  profiles:
+    active: ${MENUGURU_ENV}
+
+---
+spring:
+  config:
+    activate:
+      on-profile:
+      - development
+      - test
