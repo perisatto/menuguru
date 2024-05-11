@@ -8,12 +8,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import com.perisatto.fiapprj.menuguru.application.domain.service.CustomerService;
-import com.perisatto.fiapprj.menuguru.application.domain.service.ProductService;
-import com.perisatto.fiapprj.menuguru.application.port.in.ManageCustomerUseCase;
-import com.perisatto.fiapprj.menuguru.application.port.in.ManageProductUseCase;
-import com.perisatto.fiapprj.menuguru.application.port.out.ManageCustomerPort;
-import com.perisatto.fiapprj.menuguru.application.port.out.ManageProductPort;
+import com.perisatto.fiapprj.menuguru.customer.domain.service.CustomerService;
+import com.perisatto.fiapprj.menuguru.customer.port.in.ManageCustomerUseCase;
+import com.perisatto.fiapprj.menuguru.customer.port.out.ManageCustomerPort;
+import com.perisatto.fiapprj.menuguru.order.domain.service.OrderService;
+import com.perisatto.fiapprj.menuguru.order.port.in.ManageOrderUseCase;
+import com.perisatto.fiapprj.menuguru.product.domain.service.ProductService;
+import com.perisatto.fiapprj.menuguru.product.port.in.ManageProductUseCase;
+import com.perisatto.fiapprj.menuguru.product.port.out.ManageProductPort;
 
 @Configuration
 public class MenuguruConfig {

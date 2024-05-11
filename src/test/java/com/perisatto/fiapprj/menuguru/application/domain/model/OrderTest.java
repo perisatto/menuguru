@@ -11,6 +11,9 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import com.perisatto.fiapprj.menuguru.handler.exceptions.ValidationException;
+import com.perisatto.fiapprj.menuguru.order.domain.model.Order;
+import com.perisatto.fiapprj.menuguru.order.domain.model.OrderItem;
+import com.perisatto.fiapprj.menuguru.order.domain.model.OrderStatus;
 
 public class OrderTest {
 

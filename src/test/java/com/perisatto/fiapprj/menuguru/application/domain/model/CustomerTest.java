@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
+import com.perisatto.fiapprj.menuguru.customer.domain.model.CPF;
+import com.perisatto.fiapprj.menuguru.customer.domain.model.Customer;
+
 public class CustomerTest {
 
 	@Test

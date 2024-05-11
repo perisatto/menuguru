@@ -8,9 +8,10 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import com.perisatto.fiapprj.menuguru.application.domain.model.CPF;
-import com.perisatto.fiapprj.menuguru.application.domain.model.Customer;
-import com.perisatto.fiapprj.menuguru.application.port.out.ManageCustomerPort;
+import com.perisatto.fiapprj.menuguru.customer.domain.model.CPF;
+import com.perisatto.fiapprj.menuguru.customer.domain.model.Customer;
+import com.perisatto.fiapprj.menuguru.customer.domain.service.CustomerService;
+import com.perisatto.fiapprj.menuguru.customer.port.out.ManageCustomerPort;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.NotFoundException;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.ValidationException;
 

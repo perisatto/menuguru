@@ -8,12 +8,13 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import com.perisatto.fiapprj.menuguru.application.domain.model.Customer;
-import com.perisatto.fiapprj.menuguru.application.domain.model.Product;
-import com.perisatto.fiapprj.menuguru.application.domain.model.ProductType;
-import com.perisatto.fiapprj.menuguru.application.port.out.ManageProductPort;
+import com.perisatto.fiapprj.menuguru.customer.domain.model.Customer;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.NotFoundException;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.ValidationException;
+import com.perisatto.fiapprj.menuguru.product.domain.model.Product;
+import com.perisatto.fiapprj.menuguru.product.domain.model.ProductType;
+import com.perisatto.fiapprj.menuguru.product.domain.service.ProductService;
+import com.perisatto.fiapprj.menuguru.product.port.out.ManageProductPort;
 
 public class ProductServiceTest {
 
