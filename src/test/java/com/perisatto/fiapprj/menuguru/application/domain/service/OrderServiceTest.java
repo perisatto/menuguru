@@ -9,23 +9,71 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import com.perisatto.fiapprj.menuguru.customer.domain.model.CPF;
+import com.perisatto.fiapprj.menuguru.customer.domain.model.Customer;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.NotFoundException;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.ValidationException;
 import com.perisatto.fiapprj.menuguru.order.domain.model.Order;
 import com.perisatto.fiapprj.menuguru.order.domain.model.OrderItem;
 import com.perisatto.fiapprj.menuguru.order.domain.model.OrderStatus;
 import com.perisatto.fiapprj.menuguru.order.domain.service.OrderService;
+import com.perisatto.fiapprj.menuguru.order.port.out.ManageOrderPort;
 import com.perisatto.fiapprj.menuguru.order.port.out.OrderCustomerPort;
 import com.perisatto.fiapprj.menuguru.order.port.out.OrderProductPort;
+import com.perisatto.fiapprj.menuguru.product.domain.model.Product;
+import com.perisatto.fiapprj.menuguru.product.domain.model.ProductType;
 
 public class OrderServiceTest {
-	
-	private OrderCustomerPort orderCustomerPort;
-	private OrderProductPort orderProductPort;
+
+	private OrderCustomerPort orderCustomerPort = new OrderCustomerPort() {
+
+		@Override
+		public Customer getCustomer(Long id) throws Exception {
+			if(id==10L) {
+				String customerName = "Roberto Machado";
+				String customerEmail = "roberto.machado@bestmail.com";
+				String documentNumber = "90779778057";
+
+				CPF customerCPF = new CPF(documentNumber);
+				Customer customer = new Customer(10L, customerCPF, customerName, customerEmail);
+				return customer;
+			} else {
+				throw new NotFoundException("tst-0000", "Customer not found");
+			}
+		}
+
+	};
+	private OrderProductPort orderProductPort = new OrderProductPort() {
+
+		@Override
+		public Product getProduct(Long id) throws Exception {
+			String productName = "X-Bacon";
+			ProductType productType = ProductType.LANCHE;
+			String productDescription = "O x-bacon é um sanduíche irresistível que une o sabor intenso do bacon crocante com queijo derretido"
+					+ ", alface, tomate e um suculento hambúrguer, tudo envolto em um pão macio e tostado. "
+					+ "Uma explosão de sabores em cada mordida!";
+			Double productPrice = 35.50;
+			String productImage = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";			
+			Product product = new Product(productName, productType, productDescription, productPrice, productImage);
+			product.setId(1L);
+			return product;
+		}
+
+	};
+	private ManageOrderPort manageOrderPort = new ManageOrderPort() {
+
+		@Override
+		public Order createOrder(Order order) throws Exception {
+			Order newOrder = order;
+			newOrder.setId(1L);
+			return newOrder;
+		}
+
+	};
 
 	@Test
 	void givenValidParameters_thenCreateOrder() throws Exception {
-		Long customerId = 1L;
+		Long customerId = 10L;
 		Long firstProductId = 1L;
 		Double firstProductActualPrice = 35.50;
 		Integer firstProductQuantity = 1;		
@@ -41,7 +89,7 @@ public class OrderServiceTest {
 		orderItems.add(secondItem);	
 
 
-		OrderService orderService = new OrderService(orderCustomerPort, orderProductPort);
+		OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
 
 		Order order = orderService.createOrder(customerId, orderItems);
 
@@ -67,7 +115,7 @@ public class OrderServiceTest {
 		orderItems.add(secondItem);	
 
 
-		OrderService orderService = new OrderService(orderCustomerPort, orderProductPort);
+		OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
 
 		Order order = orderService.createOrder(null, orderItems);
 
@@ -93,16 +141,16 @@ public class OrderServiceTest {
 			orderItems.add(secondItem);	
 
 
-			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort);
+			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
 
 			Order order = orderService.createOrder(customerId, orderItems);
-			
+
 			assertTrue(false);
 		} catch (Exception e) {
 			assertThatExceptionOfType(ValidationException.class);
 		}
 	}
-	
+
 	@Test
 	void givenInexistentCustomerId_thenRefusesToCreateOrder() {
 		try { 
@@ -120,16 +168,16 @@ public class OrderServiceTest {
 			orderItems.add(secondItem);	
 
 
-			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort);
+			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
 
 			Order order = orderService.createOrder(customerId, orderItems);
-			
+
 			assertTrue(false);
 		} catch (Exception e) {
 			assertThatExceptionOfType(NotFoundException.class);
 		}
 	}
-	
+
 	@Test
 	void givenInvalidProductId_thenRefusesToCreateOrder() {
 		try { 
@@ -147,17 +195,17 @@ public class OrderServiceTest {
 			orderItems.add(secondItem);	
 
 
-			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort);
+			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
 
 			Order order = orderService.createOrder(customerId, orderItems);
-			
+
 			assertTrue(false);
 		} catch (Exception e) {
 			assertThatExceptionOfType(ValidationException.class);
 		}
 	}
-	
-	
+
+
 	@Test
 	void givenInexistentProductId_thenRefusesToCreateOrder() {
 		try { 
@@ -175,17 +223,17 @@ public class OrderServiceTest {
 			orderItems.add(secondItem);	
 
 
-			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort);
+			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
 
 			Order order = orderService.createOrder(customerId, orderItems);
-			
+
 			assertTrue(false);
 		} catch (Exception e) {
 			assertThatExceptionOfType(NotFoundException.class);
 		}
 	}
-	
-	
+
+
 	@Test
 	void givenInvalidQuantity_thenRefusesToCreateOrder() {
 		try { 
@@ -203,10 +251,10 @@ public class OrderServiceTest {
 			orderItems.add(secondItem);	
 
 
-			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort);
+			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
 
 			Order order = orderService.createOrder(customerId, orderItems);			
-			
+
 			assertTrue(false);
 		} catch (Exception e) {
 			assertThatExceptionOfType(NotFoundException.class);

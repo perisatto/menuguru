@@ -38,7 +38,7 @@ public class CustomerController {
 	private Properties requestProperties;
 	
 	@PostMapping(value = "/customers", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<CreateCustomerResponseDTO> createUser(@RequestBody CreateCustomerRequestDTO createRequest) throws Exception {
+	public ResponseEntity<CreateCustomerResponseDTO> createCustomer(@RequestBody CreateCustomerRequestDTO createRequest) throws Exception {
 		requestProperties.setProperty("resourcePath", "/customers");
 		Customer customer = manageCustomerUseCase.createCustomer(createRequest.getDocumentNumber(), createRequest.getName(), createRequest.getEmail());
 		ModelMapper customerMapper = new ModelMapper();

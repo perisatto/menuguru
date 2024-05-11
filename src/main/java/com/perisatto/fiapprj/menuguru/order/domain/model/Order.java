@@ -28,7 +28,7 @@ public class Order {
 		Double totalPrice = 0.0;
 
 		for(OrderItem item : orderItems) {
-			totalPrice = totalPrice + item.getActualPrice();
+			totalPrice = totalPrice + (item.getActualPrice() * item.getQuantity());
 		}
 
 		this.status = orderStatus;

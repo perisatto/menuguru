@@ -10,6 +10,7 @@ import com.perisatto.fiapprj.menuguru.order.domain.model.Order;
 import com.perisatto.fiapprj.menuguru.order.domain.model.OrderItem;
 import com.perisatto.fiapprj.menuguru.order.domain.model.OrderStatus;
 import com.perisatto.fiapprj.menuguru.order.port.in.ManageOrderUseCase;
+import com.perisatto.fiapprj.menuguru.order.port.out.ManageOrderPort;
 import com.perisatto.fiapprj.menuguru.order.port.out.OrderCustomerPort;
 import com.perisatto.fiapprj.menuguru.order.port.out.OrderProductPort;
 import com.perisatto.fiapprj.menuguru.product.domain.model.Product;
@@ -19,10 +20,13 @@ public class OrderService implements ManageOrderUseCase {
 	static final Logger logger = LogManager.getLogger(OrderService.class);
 	
 	private OrderCustomerPort orderCustomerPort;
-	private OrderProductPort orderProductPort;	
+	private OrderProductPort orderProductPort;
+	private ManageOrderPort manageOrderPort;
 	
-	public OrderService(OrderCustomerPort productCustomerPort, OrderProductPort orderProductPort) {
-		this.orderCustomerPort = productCustomerPort;
+	public OrderService(OrderCustomerPort orderCustomerPort, OrderProductPort orderProductPort, ManageOrderPort manageOrderPort) {
+		this.orderCustomerPort = orderCustomerPort;
+		this.orderProductPort = orderProductPort;
+		this.manageOrderPort = manageOrderPort;
 	}
 
 	@Override
@@ -39,14 +43,14 @@ public class OrderService implements ManageOrderUseCase {
 		logger.info("Validating items...");
 		for(OrderItem item : orderItems) {
 			Product product = orderProductPort.getProduct(item.getProductId());
-			totalPrice = totalPrice + product.getPrice();
+			totalPrice = totalPrice + (product.getPrice() * item.getQuantity());
 			item.setActualPrice(product.getPrice());
 			items.add(item);
 		}
 
-		Order order = new Order(OrderStatus.RECEBIDO, customerId, items);
-
-		
-		return order;
+		Order newOrder = new Order(OrderStatus.RECEBIDO, customerId, items);
+		newOrder = manageOrderPort.createOrder(newOrder);
+		logger.info("New order created.");
+		return newOrder;
 	}
 }

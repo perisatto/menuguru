@@ -2,6 +2,8 @@ package com.perisatto.fiapprj.menuguru.handler.exceptions;
 
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -24,6 +26,8 @@ import com.perisatto.fiapprj.menuguru.handler.errors.HttpErrorHandler;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+	
+	static final Logger logger = LogManager.getLogger(RestExceptionHandler.class);
 	
 	@Autowired
 	private Properties requestProperties;
@@ -97,8 +101,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleExceptions(Exception ex) {
 		String resourcePath = requestProperties.getProperty("resourcePath");
 		String title = "Internal server error";
-		String detail = "A error ocurred during the operation. Please refer to application log for details";
+		String detail = "A error ocurred during the operation. Please refer to application log for details";		
 		String instance = resourcePath;
+		logger.error(ex.getMessage());
 		return buildResponseEntity(new HttpErrorHandler(title, detail, instance), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
