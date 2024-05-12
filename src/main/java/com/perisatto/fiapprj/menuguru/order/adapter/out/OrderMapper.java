@@ -20,6 +20,7 @@ public class OrderMapper {
 		}
 		Order order = new Order(OrderStatus.values()[(int) (orderJpaEntity.getIdOrderStatus() - 1)], orderJpaEntity.getIdCustomer(), items);
 		order.setId(orderJpaEntity.getIdOrder());
+		order.setPaymentIdentifier(orderJpaEntity.getPaymentIdentifier());
 		return order;
 	}
 	
@@ -39,6 +40,7 @@ public class OrderMapper {
 		orderJpaEntity.setIdOrderStatus(order.getStatus().getId());
 		orderJpaEntity.setTotalPrice(order.getTotalPrice());
 		orderJpaEntity.setItems(jpaItems);
+		orderJpaEntity.setPaymentIdentifier(order.getPaymentIdentifier());
 		return orderJpaEntity;
 		
 	}

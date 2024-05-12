@@ -102,6 +102,12 @@ public class OrderServiceTest {
 		public Set<Order> findAll(Integer limit, Integer page) throws Exception {
 			// TODO Auto-generated method stub
 			return null;
+		}
+
+		@Override
+		public Optional<Order> updateOrder(Order order) {
+			// TODO Auto-generated method stub
+			return null;
 		}		
 	};
 

@@ -17,6 +17,7 @@ public class Order {
 	private Long customerId;
 	private Set<OrderItem> items;
 	private Double totalPrice;
+	private String paymentIdentifier;
 
 
 	public Order(OrderStatus orderStatus, Long customerId, Set<OrderItem> orderItems) throws Exception {
@@ -67,6 +68,14 @@ public class Order {
 	}
 	public void setTotalPrice(Double totalPrice) {
 		this.totalPrice = totalPrice;
+	}
+
+	public String getPaymentIdentifier() {
+		return paymentIdentifier;
+	}
+
+	public void setPaymentIdentifier(String paymentIdentifier) {
+		this.paymentIdentifier = paymentIdentifier;
 	}
 
 	private boolean validate(OrderStatus orderStatus, Long customerId, Set<OrderItem> orderItems) {

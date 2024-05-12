@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.CheckoutOrderRequestDTO;
+import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.ChecktoutOrderResponseDTO;
 import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.CreateOrderRequestDTO;
 import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.CreateOrderResponseDTO;
 import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.GetOrderListResponseDTO;
@@ -69,6 +71,15 @@ public class OrderController {
 		Set<Order> orders = manageOrderUseCase.findAllOrders(size, page);
 		GetOrderListResponseDTO response = new GetOrderListResponseDTO();
 		response.setContent(orders, page, size);		
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+	
+	@PostMapping(value = "/orders/{orderId}/checkout", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ChecktoutOrderResponseDTO> checkoutOrder(@PathVariable(value = "orderId") Long orderId, @RequestBody CheckoutOrderRequestDTO checkoutRequest) throws Exception {
+		requestProperties.setProperty("resourcePath", "/orders/" + orderId +"/checkout");
+		Order checkoutedOrder = manageOrderUseCase.checkoutOrder(orderId, checkoutRequest.getPaymentIdentifier());
+		ChecktoutOrderResponseDTO response = new ChecktoutOrderResponseDTO();
+		response.setStatus(checkoutedOrder.getStatus().toString());
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 }

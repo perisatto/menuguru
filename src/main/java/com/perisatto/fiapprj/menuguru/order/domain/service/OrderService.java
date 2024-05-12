@@ -3,10 +3,12 @@ package com.perisatto.fiapprj.menuguru.order.domain.service;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.fasterxml.jackson.core.json.UTF8DataInputJsonParser;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.NotFoundException;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.ValidationException;
 import com.perisatto.fiapprj.menuguru.order.domain.model.Order;
@@ -51,7 +53,7 @@ public class OrderService implements ManageOrderUseCase {
 			items.add(item);
 		}
 
-		Order newOrder = new Order(OrderStatus.RECEBIDO, customerId, items);
+		Order newOrder = new Order(OrderStatus.PENDENTE_PAGAMENTO, customerId, items);
 		newOrder = manageOrderPort.createOrder(newOrder);
 		logger.info("New order created.");
 		return newOrder;
@@ -63,7 +65,7 @@ public class OrderService implements ManageOrderUseCase {
 		if(order.isPresent()) {
 			return order.get();
 		} else {
-			throw new NotFoundException("ordr-2001", "Customer not found");
+			throw new NotFoundException("ordr-2001", "Order not found");
 		}	
 	}
 
@@ -95,5 +97,52 @@ public class OrderService implements ManageOrderUseCase {
 			logger.debug("\"validateFindAll\" | offset validation: " + message);
 			throw new ValidationException("prdt-2003", message);	
 		}
+	}
+
+	@Override
+	public Order updateOrder(Long id, String status) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Order checkoutOrder(Long id, String paymentIdentifier) throws Exception {
+		logger.info("Checkouting order...");
+		Optional<Order> order = manageOrderPort.getOrder(id);
+		if(order.isPresent()) {
+			
+			Order checkoutOrder = order.get();
+			
+			if(checkoutOrder.getStatus() != OrderStatus.PENDENTE_PAGAMENTO) {
+				throw new ValidationException("ordr-2005", "Order is already checkout");
+			}
+			
+			try {
+				UUID.fromString(paymentIdentifier);
+			} catch (IllegalArgumentException e) {
+				logger.warn("Payment identifier is not a UUID format");
+				throw new ValidationException("ordr-2004", "Payment Identifier invalid");
+			}
+			
+			
+			checkoutOrder.setStatus(OrderStatus.RECEBIDO);
+			checkoutOrder.setPaymentIdentifier(paymentIdentifier);
+			
+			Optional<Order> updatedOrder = manageOrderPort.updateOrder(checkoutOrder);
+			if(updatedOrder.isPresent()) {
+				logger.info("Order checkouted...");
+				return updatedOrder.get();
+			} else {
+				throw new NotFoundException("ordr-2005", "Order not found");
+			}
+		} else {
+			throw new NotFoundException("ordr-2005", "Order not found");
+		}
+	}
+
+	@Override
+	public Order cancelOrder(Long id) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

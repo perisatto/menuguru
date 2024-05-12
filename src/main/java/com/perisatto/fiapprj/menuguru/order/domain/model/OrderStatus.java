@@ -1,10 +1,12 @@
 package com.perisatto.fiapprj.menuguru.order.domain.model;
 
 public enum OrderStatus {
-	RECEBIDO(1L),
-	EM_PREPARACAO(2L),
-	PRONTO(3L),
-	FINALIZADO(4L);
+	PENDENTE_PAGAMENTO(1L),
+	RECEBIDO(2L),
+	EM_PREPARACAO(3L),
+	PRONTO(4L),
+	FINALIZADO(5L),
+	CANCELADO(6L);
 	
 	private Long id;
 	

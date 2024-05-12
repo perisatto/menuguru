@@ -17,6 +17,9 @@ import com.perisatto.fiapprj.menuguru.order.domain.model.Order;
 import com.perisatto.fiapprj.menuguru.order.domain.model.OrderItem;
 import com.perisatto.fiapprj.menuguru.order.domain.model.OrderStatus;
 import com.perisatto.fiapprj.menuguru.order.port.out.ManageOrderPort;
+import com.perisatto.fiapprj.menuguru.product.adapter.out.ProductMapper;
+import com.perisatto.fiapprj.menuguru.product.adapter.out.repository.ProductJpaEntity;
+import com.perisatto.fiapprj.menuguru.product.domain.model.Product;
 import com.perisatto.fiapprj.menuguru.product.domain.model.ProductType;
 
 @Component
@@ -74,5 +77,14 @@ public class OrderPersistenceAdapter implements ManageOrderPort{
 			orderSet.add(retrievedOrder);
 		}
 		return orderSet;
+	}
+
+	@Override
+	public Optional<Order> updateOrder(Order order) throws Exception {
+		OrderMapper orderMapper = new OrderMapper();
+		OrderJpaEntity orderJpaEntity = orderMapper.mapToJpaEntity(order);
+		orderJpaEntity = orderRepository.save(orderJpaEntity);
+		Order updatedOrder = orderMapper.mapToDomainEntity(orderJpaEntity);
+		return Optional.of(updatedOrder);
 	}
 }

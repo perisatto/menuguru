@@ -22,6 +22,7 @@ public class OrderJpaEntity {
 	private Long idOrderStatus;
 	private Long idCustomer;
 	private Double totalPrice;
+	private String paymentIdentifier;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "idOrder", nullable=false)
@@ -65,5 +66,13 @@ public class OrderJpaEntity {
 	
 	public void setItems(Set<OrderItemJpaEntity> items) {
 		this.items = items;
+	}
+
+	public String getPaymentIdentifier() {
+		return paymentIdentifier;
+	}
+
+	public void setPaymentIdentifier(String paymentIdentifier) {
+		this.paymentIdentifier = paymentIdentifier;
 	}
 }

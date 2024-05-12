@@ -11,4 +11,6 @@ public interface ManageOrderPort {
 	Optional<Order> getOrder(Long orderId) throws Exception;
 	
 	Set<Order> findAll(Integer limit, Integer page) throws Exception;
+	
+	Optional<Order> updateOrder(Order order) throws Exception;
 }
