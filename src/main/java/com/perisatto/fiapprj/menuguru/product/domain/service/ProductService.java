@@ -148,7 +148,7 @@ public class ProductService implements ManageProductUseCase{
 				throw e;
 			}
 		} catch (NullPointerException e) {
-			logger.info("Error creating a new product: "+ e.getMessage());
+			logger.info("Error getting products: "+ e.getMessage());
 			throw new ValidationException("prdt-2008","Invalid product type");
 		}
 	}

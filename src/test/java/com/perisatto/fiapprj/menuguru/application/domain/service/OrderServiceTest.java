@@ -96,6 +96,12 @@ public class OrderServiceTest {
 			}else {
 				return Optional.empty();
 			}
+		}
+
+		@Override
+		public Set<Order> findAll(Integer limit, Integer page) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
 		}		
 	};
 

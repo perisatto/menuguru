@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.CreateOrderRequestDTO;
 import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.CreateOrderResponseDTO;
+import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.GetOrderListResponseDTO;
 import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.GetOrderResponseDTO;
 import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.OrderItemDTO;
 import com.perisatto.fiapprj.menuguru.order.domain.model.Order;
@@ -57,6 +59,16 @@ public class OrderController {
 		Order order = manageOrderUseCase.getOrder(orderId);
 		ModelMapper orderMapper = new ModelMapper();
 		GetOrderResponseDTO response = orderMapper.map(order, GetOrderResponseDTO.class);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+	
+	@GetMapping(value = "/orders", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<GetOrderListResponseDTO> getAll(@RequestParam(value = "_page", required = true) Integer page,
+			@RequestParam(value = "_size", required = true) Integer size) throws Exception {
+		requestProperties.setProperty("resourcePath", "/orders");
+		Set<Order> orders = manageOrderUseCase.findAllOrders(size, page);
+		GetOrderListResponseDTO response = new GetOrderListResponseDTO();
+		response.setContent(orders, page, size);		
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 }

@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.perisatto.fiapprj.menuguru.handler.exceptions.NotFoundException;
+import com.perisatto.fiapprj.menuguru.handler.exceptions.ValidationException;
 import com.perisatto.fiapprj.menuguru.order.domain.model.Order;
 import com.perisatto.fiapprj.menuguru.order.domain.model.OrderItem;
 import com.perisatto.fiapprj.menuguru.order.domain.model.OrderStatus;
@@ -20,11 +21,11 @@ import com.perisatto.fiapprj.menuguru.product.domain.model.Product;
 public class OrderService implements ManageOrderUseCase {
 
 	static final Logger logger = LogManager.getLogger(OrderService.class);
-	
+
 	private OrderCustomerPort orderCustomerPort;
 	private OrderProductPort orderProductPort;
 	private ManageOrderPort manageOrderPort;
-	
+
 	public OrderService(OrderCustomerPort orderCustomerPort, OrderProductPort orderProductPort, ManageOrderPort manageOrderPort) {
 		this.orderCustomerPort = orderCustomerPort;
 		this.orderProductPort = orderProductPort;
@@ -41,7 +42,7 @@ public class OrderService implements ManageOrderUseCase {
 
 		Set<OrderItem> items = new LinkedHashSet<OrderItem>();
 		Double totalPrice = 0.0;
-		
+
 		logger.info("Validating items...");
 		for(OrderItem item : orderItems) {
 			Product product = orderProductPort.getProduct(item.getProductId());
@@ -64,5 +65,35 @@ public class OrderService implements ManageOrderUseCase {
 		} else {
 			throw new NotFoundException("ordr-2001", "Customer not found");
 		}	
+	}
+
+	@Override
+	public Set<Order> findAllOrders(Integer limit, Integer page) throws Exception {
+		if(limit==null) {
+			limit = 10;
+		}
+
+		if(page==null) {
+			page = 1;
+		}
+
+		validateFindAll(limit, page);		
+
+		Set<Order> findResult = manageOrderPort.findAll(limit, page - 1);		
+		return findResult;
+	}
+
+	private void validateFindAll(Integer limit, Integer page) throws Exception {
+		if (limit < 0 || limit > 50) {
+			String message = "Invalid size parameter. Value must be greater than 0 and less than 50. Actual value: " + limit;
+			logger.debug("\"validateFindAll\" | limit validation: " + message);
+			throw new ValidationException("prdt-2002", message);			
+		}
+
+		if (page < 1) {
+			String message = "Invalid page parameter. Value must be greater than 0. Actual value: " + page;
+			logger.debug("\"validateFindAll\" | offset validation: " + message);
+			throw new ValidationException("prdt-2003", message);	
+		}
 	}
 }
