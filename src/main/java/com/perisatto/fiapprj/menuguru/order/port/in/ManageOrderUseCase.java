@@ -7,4 +7,6 @@ import com.perisatto.fiapprj.menuguru.order.domain.model.OrderItem;
 
 public interface ManageOrderUseCase {
 	Order createOrder(Long customerId, Set<OrderItem> orderItems) throws Exception;
+	
+	Order getOrder(Long orderId) throws Exception;
 }

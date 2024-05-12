@@ -1,5 +1,7 @@
 package com.perisatto.fiapprj.menuguru.order.adapter.out;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 
 import com.perisatto.fiapprj.menuguru.order.adapter.out.repository.OrderJpaEntity;
@@ -25,4 +27,17 @@ public class OrderPersistenceAdapter implements ManageOrderPort{
 		return createdOrder;
 	}
 
+	@Override
+	public Optional<Order> getOrder(Long orderId) throws Exception {
+		Order order;
+		Optional<OrderJpaEntity> orderJpaEntity = orderRepository.findById(orderId);
+		
+		if(orderJpaEntity.isPresent()) {
+			OrderMapper orderMapper = new OrderMapper();
+			order = orderMapper.mapToDomainEntity(orderJpaEntity.get());
+		}else {
+			return Optional.empty();
+		}
+		return Optional.of(order);
+	}
 }

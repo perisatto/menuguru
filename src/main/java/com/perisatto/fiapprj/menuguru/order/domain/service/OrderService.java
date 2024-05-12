@@ -1,11 +1,13 @@
 package com.perisatto.fiapprj.menuguru.order.domain.service;
 
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.perisatto.fiapprj.menuguru.handler.exceptions.NotFoundException;
 import com.perisatto.fiapprj.menuguru.order.domain.model.Order;
 import com.perisatto.fiapprj.menuguru.order.domain.model.OrderItem;
 import com.perisatto.fiapprj.menuguru.order.domain.model.OrderStatus;
@@ -52,5 +54,15 @@ public class OrderService implements ManageOrderUseCase {
 		newOrder = manageOrderPort.createOrder(newOrder);
 		logger.info("New order created.");
 		return newOrder;
+	}
+
+	@Override
+	public Order getOrder(Long orderId) throws Exception {
+		Optional<Order> order = manageOrderPort.getOrder(orderId);
+		if(order.isPresent()) {
+			return order.get();
+		} else {
+			throw new NotFoundException("ordr-2001", "Customer not found");
+		}	
 	}
 }

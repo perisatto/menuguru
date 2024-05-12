@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -69,6 +70,33 @@ public class OrderServiceTest {
 			return newOrder;
 		}
 
+		@Override
+		public Optional<Order> getOrder(Long orderId) throws Exception {
+			if(orderId==1L) {
+				OrderStatus orderStatus = OrderStatus.RECEBIDO;
+				Long customerId = 1L;
+
+				Long firstProductId = 1L;
+				Double firstProductActualPrice = 35.50;
+				Integer firstProductQuantity = 1;		
+				OrderItem firstItem = new OrderItem(firstProductId, firstProductActualPrice, firstProductQuantity);
+
+				Long secondProductId = 1L;
+				Double secondProductActualPrice = 35.50;
+				Integer secondProductQuantity = 1;		
+				OrderItem secondItem = new OrderItem(secondProductId, secondProductActualPrice, secondProductQuantity);		
+
+				Set<OrderItem> orderItems = new LinkedHashSet<OrderItem>();
+				orderItems.add(firstItem);
+				orderItems.add(secondItem);
+
+				Order order = new Order(orderStatus, customerId, orderItems);
+				order.setId(orderId);
+				return Optional.of(order);
+			}else {
+				return Optional.empty();
+			}
+		}		
 	};
 
 	@Test
@@ -259,5 +287,34 @@ public class OrderServiceTest {
 		} catch (Exception e) {
 			assertThatExceptionOfType(NotFoundException.class);
 		}
+	}
+
+	@Test
+	void givenValidOrderId_thenRetrieveOrder() throws Exception {
+		Long orderId = 1L;
+
+		OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
+
+		Order order = orderService.getOrder(orderId);
+
+		assertThat(order.getId()).isEqualTo(orderId);
+		assertThat(order.getItems()).isNotEmpty();
+		assertThat(order.getTotalPrice()).isGreaterThan(0.0);		
+	}
+
+	@Test
+	void givenInexistentOrderId_thenRefusesToRetrieveOrder() {
+		try { 
+			Long orderId = 2L;
+
+			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
+
+			Order order = orderService.getOrder(orderId);
+
+			assertTrue(false);
+		}catch (Exception e) {
+			assertThatExceptionOfType(NotFoundException.class);
+		}
+
 	}
 }
