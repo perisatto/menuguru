@@ -17,10 +17,6 @@ import com.perisatto.fiapprj.menuguru.order.domain.model.Order;
 import com.perisatto.fiapprj.menuguru.order.domain.model.OrderItem;
 import com.perisatto.fiapprj.menuguru.order.domain.model.OrderStatus;
 import com.perisatto.fiapprj.menuguru.order.port.out.ManageOrderPort;
-import com.perisatto.fiapprj.menuguru.product.adapter.out.ProductMapper;
-import com.perisatto.fiapprj.menuguru.product.adapter.out.repository.ProductJpaEntity;
-import com.perisatto.fiapprj.menuguru.product.domain.model.Product;
-import com.perisatto.fiapprj.menuguru.product.domain.model.ProductType;
 
 @Component
 public class OrderPersistenceAdapter implements ManageOrderPort{
@@ -86,5 +82,29 @@ public class OrderPersistenceAdapter implements ManageOrderPort{
 		orderJpaEntity = orderRepository.save(orderJpaEntity);
 		Order updatedOrder = orderMapper.mapToDomainEntity(orderJpaEntity);
 		return Optional.of(updatedOrder);
+	}
+
+	@Override
+	public Set<Order> listPreparationQueue(Integer limit, Integer page) throws Exception {
+		Pageable pageable = PageRequest.of(page, limit, Sort.by("readyToPrepare"));
+		Page<OrderJpaEntity> orders = orderRepository.findByIdOrderStatusBetween(OrderStatus.RECEBIDO.getId(), OrderStatus.EM_PREPARACAO.getId(), pageable);
+		
+		Set<Order> orderSet = new LinkedHashSet<Order>();
+		
+			
+		for (OrderJpaEntity order : orders) {
+			Set<OrderItem> orderItems = new LinkedHashSet<OrderItem>();
+			for(OrderItemJpaEntity orderItemsJpa : order.getItems()) {
+				OrderItem orderItem = new OrderItem(orderItemsJpa.getIdProduct(),orderItemsJpa.getActualPrice(),orderItemsJpa.getQuantity());
+				orderItem.setProductId(orderItemsJpa.getIdProduct());
+				orderItems.add(orderItem);
+			}
+			
+			Order retrievedOrder = new Order(OrderStatus.values()[(int) (order.getIdOrderStatus() - 1)], order.getIdCustomer(), orderItems);
+			retrievedOrder.setId(order.getIdOrder());
+			retrievedOrder.setReadyToPrepare(order.getReadyToPrepare());
+			orderSet.add(retrievedOrder);
+		}
+		return orderSet;
 	}
 }

@@ -1,5 +1,7 @@
 package com.perisatto.fiapprj.menuguru.order.domain.service;
 
+import java.time.Duration;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -8,7 +10,6 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fasterxml.jackson.core.json.UTF8DataInputJsonParser;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.NotFoundException;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.ValidationException;
 import com.perisatto.fiapprj.menuguru.order.domain.model.Order;
@@ -101,39 +102,36 @@ public class OrderService implements ManageOrderUseCase {
 
 	@Override
 	public Order updateOrder(Long id, String status) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Order checkoutOrder(Long id, String paymentIdentifier) throws Exception {
-		logger.info("Checkouting order...");
+		logger.info("Updating order...");
 		Optional<Order> order = manageOrderPort.getOrder(id);
 		if(order.isPresent()) {
-			
-			Order checkoutOrder = order.get();
-			
-			if(checkoutOrder.getStatus() != OrderStatus.PENDENTE_PAGAMENTO) {
-				throw new ValidationException("ordr-2005", "Order is already checkout");
-			}
-			
+
+			Order updateOrder = order.get();
 			try {
-				UUID.fromString(paymentIdentifier);
+				
+				if(updateOrder.getStatus() == OrderStatus.valueOf(status)) {
+					throw new ValidationException("ordr-2001","Order is already in " + status + " status");
+				}
+				
+				updateOrder.setStatus(OrderStatus.valueOf(status));
+
+				Optional<Order> updatedOrder = manageOrderPort.updateOrder(updateOrder);
+				if(updatedOrder.isPresent()) {
+					logger.info("Order updated...");
+					return updatedOrder.get();
+				} else {
+					throw new NotFoundException("ordr-2004", "Order not found");
+				}
 			} catch (IllegalArgumentException e) {
-				logger.warn("Payment identifier is not a UUID format");
-				throw new ValidationException("ordr-2004", "Payment Identifier invalid");
-			}
-			
-			
-			checkoutOrder.setStatus(OrderStatus.RECEBIDO);
-			checkoutOrder.setPaymentIdentifier(paymentIdentifier);
-			
-			Optional<Order> updatedOrder = manageOrderPort.updateOrder(checkoutOrder);
-			if(updatedOrder.isPresent()) {
-				logger.info("Order checkouted...");
-				return updatedOrder.get();
-			} else {
-				throw new NotFoundException("ordr-2005", "Order not found");
+				if(e.getMessage().contains("No enum constant")) {
+					throw new ValidationException("ordr-2001","Invalid status");
+				}else {
+					logger.info("Error creating a new product: "+ e.getMessage());
+					throw e;
+				}
+			} catch (NullPointerException e) {
+				logger.info("Error creating a new product: "+ e.getMessage());
+				throw new ValidationException("ordr-2001","Invalid status");
 			}
 		} else {
 			throw new NotFoundException("ordr-2005", "Order not found");
@@ -141,8 +139,89 @@ public class OrderService implements ManageOrderUseCase {
 	}
 
 	@Override
+	public Order checkoutOrder(Long id, String paymentIdentifier) throws Exception {
+		logger.info("Checkouting order...");
+		Optional<Order> order = manageOrderPort.getOrder(id);
+		if(order.isPresent()) {
+
+			Order checkoutOrder = order.get();
+
+			if(checkoutOrder.getStatus() != OrderStatus.PENDENTE_PAGAMENTO) {
+				throw new ValidationException("ordr-2006", "Order is already checkout");
+			}
+
+			try {
+				UUID.fromString(paymentIdentifier);
+			} catch (IllegalArgumentException e) {
+				logger.warn("Payment identifier is not a UUID format");
+				throw new ValidationException("ordr-2007", "Payment Identifier invalid");
+			}
+
+			Date currentDate = new Date();
+			checkoutOrder.setReadyToPrepare(currentDate);
+			checkoutOrder.setStatus(OrderStatus.RECEBIDO);
+			checkoutOrder.setPaymentIdentifier(paymentIdentifier);
+
+			Optional<Order> updatedOrder = manageOrderPort.updateOrder(checkoutOrder);
+			if(updatedOrder.isPresent()) {
+				logger.info("Order checkouted...");
+				return updatedOrder.get();
+			} else {
+				throw new NotFoundException("ordr-2008", "Order not found");
+			}
+		} else {
+			throw new NotFoundException("ordr-2009", "Order not found");
+		}
+	}
+
+	@Override
 	public Order cancelOrder(Long id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		logger.info("Canceling order...");
+		Optional<Order> order = manageOrderPort.getOrder(id);
+		if(order.isPresent()) {
+			Order cancelOrder = order.get();
+
+			if((cancelOrder.getStatus() == OrderStatus.PRONTO) || 
+					(cancelOrder.getStatus() == OrderStatus.FINALIZADO) || 
+					(cancelOrder.getStatus() == OrderStatus.CANCELADO)) {
+				throw new ValidationException("ordr-2010", "Order can't be canceled. Cause: status = " + cancelOrder.getStatus().toString());
+			}
+
+			cancelOrder.setStatus(OrderStatus.CANCELADO);
+
+			Optional<Order> canceledOrder = manageOrderPort.updateOrder(cancelOrder);
+
+			if(canceledOrder.isPresent()) {
+				logger.info("Order canceled...");
+				return canceledOrder.get();
+			} else {
+				throw new NotFoundException("ordr-2011", "Order not found");
+			}
+		} else {
+			throw new NotFoundException("ordr-2012", "Order not found");
+		}
+	}
+
+	@Override
+	public Set<Order> listPreparationQueue(Integer limit, Integer page) throws Exception {
+		if(limit==null) {
+			limit = 10;
+		}
+
+		if(page==null) {
+			page = 1;
+		}
+
+		validateFindAll(limit, page);		
+
+		Set<Order> findResult = manageOrderPort.listPreparationQueue(limit, page - 1);	
+
+		Date currentDate = new Date();
+
+		for(Order order : findResult) {			
+			Duration duration = Duration.between(order.getReadyToPrepare().toInstant(), currentDate.toInstant());
+			order.setWaitingTime(duration);
+		}
+		return findResult;
 	}
 }

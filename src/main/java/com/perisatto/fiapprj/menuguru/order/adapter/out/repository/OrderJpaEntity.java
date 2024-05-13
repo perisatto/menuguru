@@ -1,5 +1,6 @@
 package com.perisatto.fiapprj.menuguru.order.adapter.out.repository;
 
+import java.util.Date;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -23,6 +24,7 @@ public class OrderJpaEntity {
 	private Long idCustomer;
 	private Double totalPrice;
 	private String paymentIdentifier;
+	private Date readyToPrepare;
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "idOrder", nullable=false)
@@ -74,5 +76,13 @@ public class OrderJpaEntity {
 
 	public void setPaymentIdentifier(String paymentIdentifier) {
 		this.paymentIdentifier = paymentIdentifier;
+	}
+
+	public Date getReadyToPrepare() {
+		return readyToPrepare;
+	}
+
+	public void setReadyToPrepare(Date readyToPrepare) {
+		this.readyToPrepare = readyToPrepare;
 	}
 }

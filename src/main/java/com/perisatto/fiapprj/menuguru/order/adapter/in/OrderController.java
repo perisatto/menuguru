@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,8 +24,10 @@ import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.ChecktoutOrderRespons
 import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.CreateOrderRequestDTO;
 import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.CreateOrderResponseDTO;
 import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.GetOrderListResponseDTO;
+import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.GetOrderPraparationQueueResponseDTO;
 import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.GetOrderResponseDTO;
 import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.OrderItemDTO;
+import com.perisatto.fiapprj.menuguru.order.adapter.in.dto.UpdateOrderRequestDTO;
 import com.perisatto.fiapprj.menuguru.order.domain.model.Order;
 import com.perisatto.fiapprj.menuguru.order.domain.model.OrderItem;
 import com.perisatto.fiapprj.menuguru.order.port.in.ManageOrderUseCase;
@@ -74,12 +77,38 @@ public class OrderController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
+	@GetMapping(value = "/preparationQueue", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<GetOrderPraparationQueueResponseDTO> getPreparationQueue(@RequestParam(value = "_page", required = true) Integer page,
+			@RequestParam(value = "_size", required = true) Integer size) throws Exception {
+		requestProperties.setProperty("resourcePath", "/preparationQueue");
+		Set<Order> orders = manageOrderUseCase.listPreparationQueue(size, page);
+		GetOrderPraparationQueueResponseDTO response = new GetOrderPraparationQueueResponseDTO();
+		response.setContent(orders, page, size);		
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+	
 	@PostMapping(value = "/orders/{orderId}/checkout", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ChecktoutOrderResponseDTO> checkoutOrder(@PathVariable(value = "orderId") Long orderId, @RequestBody CheckoutOrderRequestDTO checkoutRequest) throws Exception {
 		requestProperties.setProperty("resourcePath", "/orders/" + orderId +"/checkout");
 		Order checkoutedOrder = manageOrderUseCase.checkoutOrder(orderId, checkoutRequest.getPaymentIdentifier());
 		ChecktoutOrderResponseDTO response = new ChecktoutOrderResponseDTO();
 		response.setStatus(checkoutedOrder.getStatus().toString());
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+	}
+	
+	@PostMapping(value = "/orders/{orderId}/cancel")
+	public ResponseEntity<Object> checkoutOrder(@PathVariable(value = "orderId") Long orderId) throws Exception {
+		requestProperties.setProperty("resourcePath", "/orders/" + orderId +"/cancel");
+		manageOrderUseCase.cancelOrder(orderId);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+	}
+	
+	@PatchMapping(value = "/orders/{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ChecktoutOrderResponseDTO> patch(@PathVariable(value = "orderId") Long orderId, @RequestBody UpdateOrderRequestDTO updateRequest) throws Exception {
+		requestProperties.setProperty("resourcePath", "/orders/" + orderId.toString());			
+		Order order = manageOrderUseCase.updateOrder(orderId, updateRequest.getStatus());
+		ChecktoutOrderResponseDTO response = new ChecktoutOrderResponseDTO();
+		response.setStatus(order.getStatus().toString());
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 }

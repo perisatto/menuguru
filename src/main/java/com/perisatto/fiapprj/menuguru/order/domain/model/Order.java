@@ -1,5 +1,7 @@
 package com.perisatto.fiapprj.menuguru.order.domain.model;
 
+import java.time.Duration;
+import java.util.Date;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -18,6 +20,8 @@ public class Order {
 	private Set<OrderItem> items;
 	private Double totalPrice;
 	private String paymentIdentifier;
+	private Date readyToPrepare;
+	private Duration waitingTime;
 
 
 	public Order(OrderStatus orderStatus, Long customerId, Set<OrderItem> orderItems) throws Exception {
@@ -76,6 +80,22 @@ public class Order {
 
 	public void setPaymentIdentifier(String paymentIdentifier) {
 		this.paymentIdentifier = paymentIdentifier;
+	}
+
+	public Date getReadyToPrepare() {
+		return readyToPrepare;
+	}
+
+	public void setReadyToPrepare(Date readyToPrepare) {
+		this.readyToPrepare = readyToPrepare;
+	}
+
+	public Duration getWaitingTime() {
+		return waitingTime;
+	}
+
+	public void setWaitingTime(Duration waitingTime) {
+		this.waitingTime = waitingTime;
 	}
 
 	private boolean validate(OrderStatus orderStatus, Long customerId, Set<OrderItem> orderItems) {

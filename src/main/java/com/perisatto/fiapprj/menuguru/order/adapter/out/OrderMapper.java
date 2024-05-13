@@ -18,9 +18,10 @@ public class OrderMapper {
 			item.setOrderItemId(itemEntity.getIdOrderItem());
 			items.add(item);
 		}
-		Order order = new Order(OrderStatus.values()[(int) (orderJpaEntity.getIdOrderStatus() - 1)], orderJpaEntity.getIdCustomer(), items);
+		Order order = new Order(OrderStatus.values()[(int) (orderJpaEntity.getIdOrderStatus() - 1)], orderJpaEntity.getIdCustomer(), items);		
 		order.setId(orderJpaEntity.getIdOrder());
 		order.setPaymentIdentifier(orderJpaEntity.getPaymentIdentifier());
+		order.setReadyToPrepare(orderJpaEntity.getReadyToPrepare());
 		return order;
 	}
 	
@@ -28,6 +29,7 @@ public class OrderMapper {
 		Set<OrderItemJpaEntity> jpaItems = new LinkedHashSet<OrderItemJpaEntity>();
 		for(OrderItem item : order.getItems()) {
 			OrderItemJpaEntity itemEntity = new OrderItemJpaEntity();
+			itemEntity.setIdOrderItem(item.getOrderItemId());
 			itemEntity.setIdProduct(item.getProductId());
 			itemEntity.setActualPrice(item.getActualPrice());
 			itemEntity.setQuantity(item.getQuantity());
@@ -41,6 +43,7 @@ public class OrderMapper {
 		orderJpaEntity.setTotalPrice(order.getTotalPrice());
 		orderJpaEntity.setItems(jpaItems);
 		orderJpaEntity.setPaymentIdentifier(order.getPaymentIdentifier());
+		orderJpaEntity.setReadyToPrepare(order.getReadyToPrepare());
 		return orderJpaEntity;
 		
 	}

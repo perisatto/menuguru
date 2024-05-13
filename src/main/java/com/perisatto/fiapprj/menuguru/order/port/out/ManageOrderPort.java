@@ -13,4 +13,6 @@ public interface ManageOrderPort {
 	Set<Order> findAll(Integer limit, Integer page) throws Exception;
 	
 	Optional<Order> updateOrder(Order order) throws Exception;
+	
+	Set<Order> listPreparationQueue(Integer limit, Integer page) throws Exception;
 }

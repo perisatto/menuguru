@@ -17,4 +17,6 @@ public interface ManageOrderUseCase {
 	Order checkoutOrder(Long id, String paymentIdentifier) throws Exception;
 	
 	Order cancelOrder(Long id) throws Exception;
+	
+	Set<Order> listPreparationQueue(Integer limit, Integer page) throws Exception;
 }
