@@ -13,6 +13,8 @@ tags:
     description: Manage the customer register
   - name: products
     description: Manage the product register
+  - name: orders
+    description: Manage all orders
 paths:
   /customers:
     post:
@@ -26,7 +28,12 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Customer'                    
+              allOf:
+                - $ref: '#/components/schemas/Customer'  
+              required:
+                - documentNumber
+                - name
+                - email
         required: true        
       responses:
         '201':
@@ -447,7 +454,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Product'
+              allOf:
+                - $ref: '#/components/schemas/Product'
+              required:
+                - name
+                - productType
+                - description
+                - price
+                - image
         required: true        
       responses:
         '201':
@@ -512,7 +526,7 @@ paths:
       tags:
         - products
       summary: List products
-      description: List all customers using pagination criteria
+      description: List all products using pagination criteria
       operationId: listProducts
       parameters: 
         - name: _page
@@ -791,18 +805,556 @@ paths:
                   type: about:blank
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
-                  instance: /products                      
+                  instance: /products
+  /orders:   
+    post:
+      tags:
+        - orders
+      summary: Create new order
+      description: Create a new order
+      operationId: createOrder
+      requestBody:
+        description: Create a new order
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Order'
+              required:
+                - items
+        required: true        
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          headers: 
+            Location:
+              description: Location of the new order
+              schema:
+                type: string
+                example: /orders/1
+        '400':
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Bad request
+                  detail: Malformed request or unknown fields
+                  instance: /orders
+        '406':
+            description: Not acceptable
+        '415':
+            description: Unsupported Media Type
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Unsupported Media Type
+                  detail: Content-Type 'text/plain' is not supported
+                  instance: /orders
+        '422':
+            description: Unprocessable entity
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Unprocessable entity
+                  detail: Invalid product quantity
+                  instance: /orders
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Internal Server Error
+                  detail: A error ocurred during the operation. Please refer to application log for details
+                  instance: /orders
+    get:
+      tags:
+        - orders
+      summary: List orders
+      description: List all orders using pagination criteria
+      operationId: listOrders
+      parameters: 
+        - name: _page
+          description: Defines the page number that will be retrieved
+          in: query
+          required: true
+          example: 1
+          schema:
+              $ref: '#/components/schemas/PageParameter'
+        - name: _size
+          description: Defines the page size (rows number) that will be retrieved
+          in: query
+          required: true
+          example: 50
+          schema:
+              $ref: '#/components/schemas/SizeParameter'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PageTemplate'
+                  - type: object
+                    properties:
+                      _content:
+                        description: Itens retrieved. If there is no item the list will be empty
+                        type: array
+                        items:
+                          allOf:
+                          - $ref: '#/components/schemas/Order'
+        '400':
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Bad request
+                  detail: Malformed request or unknown fields
+                  instance: /orders
+        '406':
+            description: Not acceptable
+        '415':
+            description: Unsupported Media Type
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Unsupported Media Type
+                  detail: Content-Type 'text/plain' is not supported
+                  instance: /orders
+        '422':
+            description: Unprocessable entity
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Unprocessable entity
+                  detail: 'Invalid size parameter. Value must be greater than 0 and less than 50. Actual value: 51'
+                  instance: /orders
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Internal Server Error
+                  detail: A error ocurred during the operation. Please refer to application log for details
+                  instance: /orders    
+  /orders/{orderId}:
+    get:
+      tags:
+        - orders
+      summary: Get order
+      description: Retrieve a specific order according with id
+      operationId: getorder
+      parameters: 
+        - name: orderId
+          description: Unique key that identifies the order
+          in: path
+          required: true
+          example: 1
+          schema:
+              type: integer
+              minimum: 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Bad request
+                  detail: Malformed request or unknown fields
+                  instance: /orders
+        '404':
+            description: Resource not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Resource not found
+                  detail: Order not found
+                  instance: /orders/2
+        '406':
+            description: Not acceptable
+        '415':
+            description: Unsupported Media Type
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Unsupported Media Type
+                  detail: Content-Type 'text/plain' is not supported
+                  instance: /orders
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Internal Server Error
+                  detail: A error ocurred during the operation. Please refer to application log for details
+                  instance: /orders
+    patch:
+      tags:
+        - orders
+      description: Updates the status of a specific order
+      operationId: updateOrder
+      parameters: 
+        - name: orderId
+          description: Unique key that identifies the order
+          in: path
+          required: true
+          example: 1
+          schema:
+              type: integer
+              minimum: 1      
+      requestBody:
+        description: Updates a order
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  allOf:
+                    - $ref: '#/components/schemas/OrderStatus'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    allOf:
+                      - $ref: '#/components/schemas/OrderStatus'
+        '400':
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Bad request
+                  detail: Malformed request or unknown fields
+                  instance: /orders
+        '404':
+            description: Resource not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Resource not found
+                  detail: Order not found
+                  instance: /orders/2              
+        '406':
+            description: Not acceptable
+        '415':
+            description: Unsupported Media Type
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Unsupported Media Type
+                  detail: Content-Type 'text/plain' is not supported
+                  instance: /orders
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Internal Server Error
+                  detail: A error ocurred during the operation. Please refer to application log for details
+                  instance: /orders    
+  /orders/{orderId}/checkout:
+    post:
+      tags:
+        - orders
+      description: Effectivate the payment and send the order to production
+      operationId: checkoutOrder
+      parameters: 
+        - name: orderId
+          description: Unique key that identifies the order
+          in: path
+          required: true
+          example: 1
+          schema:
+              type: integer
+              minimum: 1      
+      requestBody:
+        description: Updates a order
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCheckout'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    allOf:
+                      - $ref: '#/components/schemas/OrderStatus'
+        '400':
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Bad request
+                  detail: Malformed request or unknown fields
+                  instance: /orders/2/checkout
+        '404':
+            description: Resource not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Resource not found
+                  detail: Order not found
+                  instance: /orders/2/checkout            
+        '406':
+            description: Not acceptable
+        '415':
+            description: Unsupported Media Type
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Unsupported Media Type
+                  detail: Content-Type 'text/plain' is not supported
+                  instance: /orders/2/checkout
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Internal Server Error
+                  detail: A error ocurred during the operation. Please refer to application log for details
+                  instance: /orders/2/checkout  
+  /orders/{orderId}/cancel:
+    post:
+      tags:
+        - orders
+      description: Cancel an order (must not be in status PRONTO or FINALIZADO)
+      operationId: cancelOrder
+      parameters: 
+        - name: orderId
+          description: Unique key that identifies the order
+          in: path
+          required: true
+          example: 1
+          schema:
+              type: integer
+              minimum: 1      
+      responses:
+        '204':
+          description: No content
+        '400':
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Bad request
+                  detail: Malformed request or unknown fields
+                  instance: /orders/2/cancel
+        '404':
+            description: Resource not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Resource not found
+                  detail: Order not found
+                  instance: /orders/2/cancel            
+        '406':
+            description: Not acceptable
+        '415':
+            description: Unsupported Media Type
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Unsupported Media Type
+                  detail: Content-Type 'text/plain' is not supported
+                  instance: /orders/2/cancel
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Internal Server Error
+                  detail: A error ocurred during the operation. Please refer to application log for details
+                  instance: /orders/2/cancel  
+  /preparationQueue:
+    get:
+      tags:
+        - orders
+      summary: List the orders in the queue for prepare
+      description: List the orders in the queue for prepare
+      operationId: preparationQueue
+      parameters: 
+        - name: _page
+          description: Defines the page number that will be retrieved
+          in: query
+          required: true
+          example: 1
+          schema:
+              $ref: '#/components/schemas/PageParameter'
+        - name: _size
+          description: Defines the page size (rows number) that will be retrieved
+          in: query
+          required: true
+          example: 50
+          schema:
+              $ref: '#/components/schemas/SizeParameter'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PageTemplate'
+                  - type: object
+                    properties:
+                      _content:
+                        description: Itens retrieved. If there is no item the list will be empty
+                        type: array
+                        items:
+                          allOf:
+                          - $ref: '#/components/schemas/OrderQueue'
+        '400':
+            description: Bad request
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Bad request
+                  detail: Malformed request or unknown fields
+                  instance: /preparationQueue
+        '406':
+            description: Not acceptable
+        '415':
+            description: Unsupported Media Type
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Unsupported Media Type
+                  detail: Content-Type 'text/plain' is not supported
+                  instance: /preparationQueue
+        '422':
+            description: Unprocessable entity
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Unprocessable entity
+                  detail: 'Invalid size parameter. Value must be greater than 0 and less than 50. Actual value: 51'
+                  instance: /preparationQueue
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ErrorTemplate'
+                example:
+                  type: about:blank
+                  tittle: Internal Server Error
+                  detail: A error ocurred during the operation. Please refer to application log for details
+                  instance: /preparationQueue   
 components:
   schemas:
+    TypeIdCustomer:
+      description: Unique key that identifies the customer
+      type: integer
+      format: int64
+      example: 10
     Customer:
       type: object
       description: A person that consumes products in the restaurant
       properties:
         id:
-          description: Unique key that identifies the customer
-          type: integer
-          format: int64
-          example: 10
+          allOf:
+            - $ref: "#/components/schemas/TypeIdCustomer"
           readOnly: true
         documentNumber:
           description: Document that identifies the customer, a.k.a 'CPF'. Only numbers including leading zeros.
@@ -831,15 +1383,24 @@ components:
         - ACOMPANHAMENTO
         - BEBIDA
         - SOBREMESA
+    TypeIdProduct:
+      description: Unique key that identifies the product
+      type: integer
+      format: int64
+      example: 10
+    TypeProductPrice:
+      description: Value of the product that should be payed to achieve him.
+      type: number
+      format: double
+      minimum: 0.01
+      example: 39.90    
     Product:
       type: object
       description: A food item selled in the restaurant
       properties:
         id:
-          description: Unique key that identifies the customer
-          type: integer
-          format: int64
-          example: 10
+          allOf:
+            - $ref: "#/components/schemas/TypeIdProduct"
           readOnly: true
         name:
           description: Word or expression that designates the product.
@@ -856,16 +1417,86 @@ components:
           maxLength: 250
           example: O x-bacon é um sanduíche irresistível que une o sabor intenso do bacon crocante com queijo derretido, alface, tomate e um suculento hambúrguer, tudo envolto em um pão macio e tostado. Uma explosão de sabores em cada mordida!
         price:
-          description: Value of the product that should be payed to achieve him.
-          type: number
-          format: double
-          minimum: 0.01
-          example: 39.90
+          $ref: "#/components/schemas/TypeProductPrice"
         image:
           description: Visual representation of the product
           type: string
           format: base64
           example: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=
+    OrderCheckout:
+      type: object
+      properties:
+        paymentIdentifier:
+          type: string
+          description: Identifies the payment process the was realized in the Payment system.
+          format: uuid
+    OrderStatus:
+      type: string
+      description: identifies the phase of orders production
+      enum:
+        - PENDENTE_PAGAMENTO
+        - RECEBIDO
+        - EM_PREPARACAO
+        - PRONTO
+        - FINALIZADO
+        - CANCELADO
+    Order:
+      type: object
+      description: group of products requested by a customer to be produced and delivered by the restaurant
+      properties:
+        id:
+          description: Unique key that identifies the order
+          type: integer
+          format: int64
+          example: 10
+          readOnly: true
+        customerId:
+          $ref: "#/components/schemas/TypeIdCustomer"
+        totalPrice:
+          type: number
+          description: Sum of the all product itens price
+          format: double
+          example: 85.90
+          readOnly: true
+        status:
+          allOf:
+            - $ref: "#/components/schemas/OrderStatus"
+          readOnly: true          
+        items:
+          type: array
+          description: List of products included in the order
+          items:
+            type: object
+            properties:
+              id:
+                $ref: "#/components/schemas/TypeIdProduct"
+              actualPrice:
+                type: number
+                description: Price of the product in the instant of the order
+                format: double
+                example: 85.90
+                readOnly: true                
+              quantity:
+                type: integer
+                description: Number of this specific product
+                format: int64
+                example: 2
+                minimum: 1
+    OrderQueue:
+      type: object
+      properties:
+        id:
+          description: Unique key that identifies the order
+          type: integer
+          format: int64
+          example: 10
+          readOnly: true      
+        status:
+          $ref: "#/components/schemas/OrderStatus"
+        waitingTime:
+          description: Amount of time that the order is in the queue.
+          type: string
+          example: 0h 35m
     PageParameter:
       type: integer
       minimum: 1
