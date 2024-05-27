@@ -21,28 +21,14 @@ Certifique-se que a variável JAVA_HOME e M2_HOME estão apontadas corretamente 
 
 ## Execução 
 
-Após realizar o download deste repositório, entre na raiz do projeto e execute o comando Maven para empacotamento da aplicação:
-
-    $mvn package
-    
-Você também pode executar o comando acima ignorando os testes unitários:
-
-    $mvn package -Dmaven.test.skip
-
-O projeto será compilado e o executavel será gerado no diretório "/target". Após a execução do build você receberá a mensagem de Build Success abaixo:
-
-    [INFO] ------------------------------------------------------------------------
-    [INFO] BUILD SUCCESS
-    [INFO] ------------------------------------------------------------------------
-
-Configure o arquivo de variáveis de ambiente com a senha a ser utilizada para o usuário root do banco de dados, substituindo "**password**" pela senha escolhida (o valor deve ser informado entre aspas):
+Após realizar o download deste repositório, entre na raiz do projeto e configure o arquivo de variáveis de ambiente com a senha a ser utilizada para o usuário root do banco de dados, substituindo "**password**" pela senha escolhida (o valor deve ser informado entre aspas):
 
     $echo MYSQL_ROOT_PASSWORD="password" >> .env
     $echo MYSQL_PASSWORD="password" >> .env
 
 >Caso o arquivo .env já exista no diretório, será necessário apagá-lo antes de configurar as variáveis de ambiente conforme instruções acima.
 
-Com o projeto compilado e variáveis de ambiente configuradas é hora de iniciar a aplicação utilizando Docker. Na raiz do projeto utilize o comando "docker-compose" para iniciar a aplicação:
+Com as variáveis de ambiente configuradas é hora de iniciar a aplicação utilizando Docker. Na raiz do projeto utilize o comando "docker-compose" para iniciar a aplicação:
 
     $docker-compose up
 
