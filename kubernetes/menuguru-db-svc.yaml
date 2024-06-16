@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: menuguru-db-svc
+spec:
+  selector:
+    menuguru.fiapprj.perisatto.com/name: database
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306

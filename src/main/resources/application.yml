@@ -29,7 +29,7 @@ spring:
       
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql_db:3306/menuguru
+    url: jdbc:mysql://${MYSQL_URL}/menuguru
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}      
   jpa:

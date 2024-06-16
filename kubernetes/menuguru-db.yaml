@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: menuguru-db
+  labels:
+    menuguru.fiapprj.perisatto.com/name: database
+spec:
+  containers:
+    - name: menuguru-db
+      image: rperisatto/menuguru-mysql_db:latest
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: menuguru-secret
+              key: mysql_password
+      ports:
+        - containerPort: 3306
+        
