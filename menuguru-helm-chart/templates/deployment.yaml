@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: menuguru-deployment
+  labels:
+    menuguru.fiapprj.perisatto.com/name: service
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      menuguru.fiapprj.perisatto.com/name: service
+  template:
+    metadata:
+      name: menuguru-api
+      labels:
+        menuguru.fiapprj.perisatto.com/name: service
+    spec:           
+      containers:
+        - name: menuguru-db
+          image: rperisatto/menuguru-api_service:{{ .Values.image.tag }}
+          env:
+            - name: MYSQL_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: menuguru-api-config
+                  key: mysql_url
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: menuguru-secret
+                  key: mysql_user      
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: menuguru-secret
+                  key: mysql_password
+          ports:
+            - containerPort: 8080

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: menuguru-api-svc
+spec:
+  selector:
+    menuguru.fiapprj.perisatto.com/name: service 
+  type: {{ .Values.service.type }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: 8080
+      {{ if eq .Values.service.type "NodePort" }}
+      nodePort: 30080
+      {{ end }}
