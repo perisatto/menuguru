@@ -4,7 +4,7 @@ image:
   tag: "fase1"
 
 service:
-  type: NodePort
+  type: LoadBalancer
   port: 8080
 
 livenessProbe:
