@@ -13,12 +13,12 @@ spec:
       menuguru.fiapprj.perisatto.com/name: service
   template:
     metadata:
-      name: menuguru-api
+      name: menuguru-deployment
       labels:
         menuguru.fiapprj.perisatto.com/name: service
     spec:           
       containers:
-        - name: menuguru-db
+        - name: menuguru-service
           image: rperisatto/menuguru-api_service:{{ .Values.image.tag }}
           env:
             - name: MYSQL_URL
@@ -38,3 +38,6 @@ spec:
                   key: mysql_password
           ports:
             - containerPort: 8080
+          resources:
+            requests:
+              cpu: 1m            

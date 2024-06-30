@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
     - name: menuguru-db
-      image: rperisatto/menuguru-mysql_db:latest
+      image: rperisatto/menuguru-mysql_db:fase1
       env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:

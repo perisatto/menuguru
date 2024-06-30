@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "menuguru-helm-chart.fullname" . }}
+  name: menuguru-deployment
   labels:
-    {{- include "menuguru-helm-chart.labels" . | nindent 4 }}
+    menuguru.fiapprj.perisatto.com/name: service
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "menuguru-helm-chart.fullname" . }}
+    name: menuguru-deployment
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
