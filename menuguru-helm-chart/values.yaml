@@ -1,10 +1,10 @@
 replicaCount: 1
 
 image:
-  tag: "fase1"
+  tag: "fase2"
 
 service:
-  type: LoadBalancer
+  type: NodePort
   port: 8080
 
 autoscaling:
@@ -14,5 +14,7 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
   
-mysqlUrl: menuguru.cu44urmo6uwb.us-east-1.rds.amazonaws.com
+mysqlUrl: menuguru-db-svc
 mysqlPort: 3306
+mysql_user: cm9vdA==
+mysql_password: Skx5NUVZYm9id0NUdkl1WUZPY3g=

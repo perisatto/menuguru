@@ -12,7 +12,7 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: menuguru-secret
+              name: menuguru-db-secret
               key: mysql_password
       ports:
         - containerPort: 3306
