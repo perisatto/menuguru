@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import com.perisatto.fiapprj.menuguru.application.interfaces.CustomerRepository;
 import com.perisatto.fiapprj.menuguru.application.interfaces.OrderRepository;
 import com.perisatto.fiapprj.menuguru.application.interfaces.ProductRepository;
+import com.perisatto.fiapprj.menuguru.domain.entities.customer.Customer;
 import com.perisatto.fiapprj.menuguru.domain.entities.order.Order;
 import com.perisatto.fiapprj.menuguru.domain.entities.order.OrderItem;
 import com.perisatto.fiapprj.menuguru.domain.entities.order.OrderStatus;
@@ -37,7 +38,10 @@ public class OrderUseCase {
 		logger.info("Creating new order...");		
 		if(customerId != null) {
 			logger.info("Validating customer...");
-			customerRepository.getCustomerById(customerId);
+			Optional<Customer> customer = customerRepository.getCustomerById(customerId);
+			if(customer.isEmpty()) {
+				throw new NotFoundException("ordr-2010", "Customer not found");
+			}
 		}
 
 		Set<OrderItem> items = new LinkedHashSet<OrderItem>();
