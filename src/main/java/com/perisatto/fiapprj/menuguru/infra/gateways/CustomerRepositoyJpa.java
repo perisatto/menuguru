@@ -22,7 +22,6 @@ public class CustomerRepositoyJpa implements CustomerRepository {
 	private final CustomerMapper customerMapper;
 
 	public CustomerRepositoyJpa(CustomerPersistenceRepository customerRepository, CustomerMapper customerMapper) {
-		super();
 		this.customerRepository = customerRepository;
 		this.customerMapper = customerMapper;
 	}
