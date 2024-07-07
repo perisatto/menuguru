@@ -38,6 +38,8 @@ public class MenuguruConfig {
 	    return dataSource;
 	}
 	
+		
+	//Abaixo, configurações para a arquitetura hexagonal
 	@Bean
 	ManageCustomerUseCase manageCustomerUseCase(ManageCustomerPort manageCustomerPort) {
 		return new CustomerService(manageCustomerPort);
