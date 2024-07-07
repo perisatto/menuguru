@@ -27,7 +27,7 @@ import com.perisatto.fiapprj.menuguru.infra.controllers.dtos.GetCustomerResponse
 import com.perisatto.fiapprj.menuguru.infra.controllers.dtos.UpdateCustomerRequestDTO;
 
 @RestController
-@RequestMapping("/menuguru/v2")
+@RequestMapping("/menuguru/v1")
 public class CustomerRestController {
 	
 	private final CustomerUseCase customerUseCase;

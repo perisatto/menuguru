@@ -33,7 +33,7 @@ import com.perisatto.fiapprj.menuguru.infra.controllers.dtos.UpdateOrderRequestD
 
 
 @RestController
-@RequestMapping("/menuguru/v2")
+@RequestMapping("/menuguru/v1")
 public class OrderRestController {
 
 	private final OrderUseCase orderUseCase;

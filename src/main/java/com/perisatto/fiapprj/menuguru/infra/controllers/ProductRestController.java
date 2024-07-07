@@ -28,7 +28,7 @@ import com.perisatto.fiapprj.menuguru.infra.controllers.dtos.UpdateProductReques
 
 
 @RestController
-@RequestMapping("/menuguru/v2")
+@RequestMapping("/menuguru/v1")
 public class ProductRestController {
 
 	private final ProductUseCase productUseCase;
