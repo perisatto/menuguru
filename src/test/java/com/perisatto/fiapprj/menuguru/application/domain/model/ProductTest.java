@@ -6,9 +6,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.perisatto.fiapprj.menuguru.domain.entities.product.Product;
+import com.perisatto.fiapprj.menuguru.domain.entities.product.ProductType;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.ValidationException;
-import com.perisatto.fiapprj.menuguru.hexagonal.product.domain.model.Product;
-import com.perisatto.fiapprj.menuguru.hexagonal.product.domain.model.ProductType;
 
 @ActiveProfiles(value = "test")
 public class ProductTest {

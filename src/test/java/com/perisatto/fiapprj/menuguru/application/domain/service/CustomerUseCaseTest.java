@@ -7,20 +7,19 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.perisatto.fiapprj.menuguru.application.interfaces.CustomerRepository;
+import com.perisatto.fiapprj.menuguru.application.usecases.CustomerUseCase;
+import com.perisatto.fiapprj.menuguru.domain.entities.customer.CPF;
+import com.perisatto.fiapprj.menuguru.domain.entities.customer.Customer;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.NotFoundException;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.ValidationException;
-import com.perisatto.fiapprj.menuguru.hexagonal.customer.domain.model.CPF;
-import com.perisatto.fiapprj.menuguru.hexagonal.customer.domain.model.Customer;
-import com.perisatto.fiapprj.menuguru.hexagonal.customer.domain.service.CustomerService;
-import com.perisatto.fiapprj.menuguru.hexagonal.customer.port.out.ManageCustomerPort;
 
 @ActiveProfiles(value = "test")
-public class CustomerServiceTest {
+public class CustomerUseCaseTest {
 
-	private ManageCustomerPort manageCustomerPortUpdate = new ManageCustomerPort() {
+	private CustomerRepository manageCustomerPortUpdate = new CustomerRepository() {
 
 		@Override
 		public Customer createCustomer(Customer customer) {
@@ -79,7 +78,7 @@ public class CustomerServiceTest {
 		}
 	};
 
-	private final ManageCustomerPort manageCustomerPort = new ManageCustomerPort() {
+	private final CustomerRepository manageCustomerPort = new CustomerRepository() {
 
 		@Override
 		public Customer createCustomer(Customer customer) {
@@ -145,9 +144,9 @@ public class CustomerServiceTest {
 		String customerEmail = "roberto.machado@bestmail.com";
 		String documentNumber = "35732996010";
 
-		CustomerService newCustomerService = new CustomerService(manageCustomerPort);
-
-		Customer customer = newCustomerService.createCustomer(documentNumber, customerName, customerEmail);
+		CustomerUseCase newCustomerUseCase = new CustomerUseCase(manageCustomerPort);
+		
+		Customer customer = newCustomerUseCase.createCustomer(documentNumber, customerName, customerEmail);
 
 		assertThat(customer.getDocumentNumber().getDocumentNumber()).isEqualTo(documentNumber);
 		assertThat(customer.getName()).isEqualTo(customerName);
@@ -161,11 +160,11 @@ public class CustomerServiceTest {
 		String customerEmail = "roberto.machado@bestmail.com";
 		String documentNumber = "90779778058";
 
-		CustomerService newCustomerService = new CustomerService(manageCustomerPort);
+		CustomerUseCase newCustomerUseCase = new CustomerUseCase(manageCustomerPort);
 
 
 		try {
-			Customer customer = newCustomerService.createCustomer(documentNumber, customerName, customerEmail);
+			Customer customer = newCustomerUseCase.createCustomer(documentNumber, customerName, customerEmail);
 		} catch (ValidationException e) {
 			assertThat(e.getMessage()).isEqualTo("Invalid document number");
 		} catch (Exception e) {
@@ -180,10 +179,10 @@ public class CustomerServiceTest {
 		String customerEmail = "roberto.machadobestmail.com";
 		String documentNumber = "90779778057";
 
-		CustomerService newCustomerService = new CustomerService(manageCustomerPort);
+		CustomerUseCase newCustomerUseCase = new CustomerUseCase(manageCustomerPort);
 
 		try {
-			Customer customer = newCustomerService.createCustomer(documentNumber, customerName, customerEmail);
+			Customer customer = newCustomerUseCase.createCustomer(documentNumber, customerName, customerEmail);
 		} catch (ValidationException e) {
 			assertThat(e.getMessage()).contains("invalid e-mail format");
 		} catch (Exception e) {
@@ -198,10 +197,10 @@ public class CustomerServiceTest {
 		String customerEmail = "roberto.machadobestmail.com";
 		String documentNumber = "90779778057";
 
-		CustomerService newCustomerService = new CustomerService(manageCustomerPort);
+		CustomerUseCase newCustomerUseCase = new CustomerUseCase(manageCustomerPort);
 
 		try {
-			Customer customer = newCustomerService.createCustomer(documentNumber, customerName, customerEmail);
+			Customer customer = newCustomerUseCase.createCustomer(documentNumber, customerName, customerEmail);
 		} catch (ValidationException e) {
 			assertThat(e.getMessage()).contains("empty, null or blank name");
 		} catch (Exception e) {
@@ -214,9 +213,9 @@ public class CustomerServiceTest {
 		try {
 			String documentNumber = "90779778057";
 
-			CustomerService newCustomerService = new CustomerService(manageCustomerPort);
+			CustomerUseCase newCustomerUseCase = new CustomerUseCase(manageCustomerPort);
 
-			Customer customer = newCustomerService.getCustomerByCPF(documentNumber);
+			Customer customer = newCustomerUseCase.getCustomerByCPF(documentNumber);
 
 			assertThat(customer.getDocumentNumber().getDocumentNumber()).isEqualTo(documentNumber);
 		} catch (NotFoundException e) {
@@ -231,9 +230,9 @@ public class CustomerServiceTest {
 		try {
 			String documentNumber = "35732996010";
 
-			CustomerService newCustomerService = new CustomerService(manageCustomerPort);
+			CustomerUseCase newCustomerUseCase = new CustomerUseCase(manageCustomerPort);
 
-			Customer customer = newCustomerService.getCustomerByCPF(documentNumber);
+			Customer customer = newCustomerUseCase.getCustomerByCPF(documentNumber);
 
 			assertThat(customer.getName()).isNullOrEmpty();
 		} catch (NotFoundException e) {
@@ -246,12 +245,12 @@ public class CustomerServiceTest {
 
 	@Test
 	void givenValidId_thenGetCustomer () {
-		CustomerService newCustomerService = new CustomerService(manageCustomerPort);
+		CustomerUseCase newCustomerUseCase = new CustomerUseCase(manageCustomerPort);
 
 		Long customerId = 10L;
 
 		try {
-			Customer customer = newCustomerService.getCustomerById(customerId);
+			Customer customer = newCustomerUseCase.getCustomerById(customerId);
 
 			assertThat(customer.getId()).isEqualTo(customerId);
 		} catch (ValidationException e) {
@@ -264,11 +263,11 @@ public class CustomerServiceTest {
 	@Test
 	void giveInexistentId_thenGetCustomerNotFound () {
 		try {
-			CustomerService newCustomerService = new CustomerService(manageCustomerPort);
+			CustomerUseCase newCustomerUseCase = new CustomerUseCase(manageCustomerPort);
 
 			Long customerId = 20L;
 
-			Customer customer = newCustomerService.getCustomerById(customerId);
+			Customer customer = newCustomerUseCase.getCustomerById(customerId);
 
 			assertThat(customer.getName()).isNullOrEmpty();
 		} catch (NotFoundException e) {
@@ -280,18 +279,18 @@ public class CustomerServiceTest {
 
 	@Test
 	void givenNewName_thenUpdateName () throws Exception {		
-		CustomerService customerService = new CustomerService(manageCustomerPortUpdate);
+		CustomerUseCase CustomerUseCase = new CustomerUseCase(manageCustomerPortUpdate);
 
 		Long customerId = 10L;
 		String customerName = "Roberto Facao";
 		String customerEmail = "roberto.facao@bestmail.com";
 		String documentNumber = "65678860054";
 
-		Customer customer = customerService.getCustomerById(customerId); 
+		Customer customer = CustomerUseCase.getCustomerById(customerId); 
 
-		Customer newCustomerData = customerService.updateCustomer(customerId, documentNumber, customerName, customerEmail);
+		Customer newCustomerData = CustomerUseCase.updateCustomer(customerId, documentNumber, customerName, customerEmail);
 
-		customer = customerService.getCustomerById(customerId);
+		customer = CustomerUseCase.getCustomerById(customerId);
 
 		assertThat(customer.getId()).isEqualTo(newCustomerData.getId());
 		assertThat(customer.getDocumentNumber().getDocumentNumber()).isEqualTo(newCustomerData.getDocumentNumber().getDocumentNumber());
@@ -301,18 +300,18 @@ public class CustomerServiceTest {
 
 	@Test
 	void givenNewEmail_thenUpdateEmail () throws Exception {
-		CustomerService customerService = new CustomerService(manageCustomerPortUpdate);
+		CustomerUseCase CustomerUseCase = new CustomerUseCase(manageCustomerPortUpdate);
 
 		Long customerId = 10L;
 		String customerName = "Roberto Facao";
 		String customerEmail = "roberto.facao@bestmail.com";
 		String documentNumber = "65678860054";
 
-		Customer customer = customerService.getCustomerById(customerId); 
+		Customer customer = CustomerUseCase.getCustomerById(customerId); 
 
-		Customer newCustomerData = customerService.updateCustomer(customerId, documentNumber, customerName, customerEmail);
+		Customer newCustomerData = CustomerUseCase.updateCustomer(customerId, documentNumber, customerName, customerEmail);
 
-		customer = customerService.getCustomerById(customerId);
+		customer = CustomerUseCase.getCustomerById(customerId);
 
 		assertThat(customer.getId()).isEqualTo(newCustomerData.getId());
 		assertThat(customer.getDocumentNumber().getDocumentNumber()).isEqualTo(newCustomerData.getDocumentNumber().getDocumentNumber());
@@ -323,18 +322,18 @@ public class CustomerServiceTest {
 	@Test
 	void givenInvalidNewEmail_thenRefusesUpdateEmail () throws Exception {
 		try {
-			CustomerService customerService = new CustomerService(manageCustomerPortUpdate);
+			CustomerUseCase CustomerUseCase = new CustomerUseCase(manageCustomerPortUpdate);
 
 			Long customerId = 10L;
 			String customerName = "Roberto Facao";
 			String customerEmail = "roberto.facaobestmail.com";
 			String documentNumber = "90779778057";
 
-			Customer customer = customerService.getCustomerById(customerId); 
+			Customer customer = CustomerUseCase.getCustomerById(customerId); 
 
-			Customer newCustomerData = customerService.updateCustomer(customerId, documentNumber, customerName, customerEmail);
+			Customer newCustomerData = CustomerUseCase.updateCustomer(customerId, documentNumber, customerName, customerEmail);
 
-			customer = customerService.getCustomerById(customerId);
+			customer = CustomerUseCase.getCustomerById(customerId);
 		}catch (Exception e) {
 			assertThatExceptionOfType(ValidationException.class);
 			assertThat(e.getMessage()).contains("invalid e-mail format");
@@ -343,18 +342,18 @@ public class CustomerServiceTest {
 
 	@Test
 	void givenNewCPF_thenUpdateCPF () throws Exception {
-		CustomerService customerService = new CustomerService(manageCustomerPortUpdate);
+		CustomerUseCase CustomerUseCase = new CustomerUseCase(manageCustomerPortUpdate);
 
 		Long customerId = 10L;
 		String customerName = "Roberto Facao";
 		String customerEmail = "roberto.facao@bestmail.com";
 		String documentNumber = "65678860054";
 
-		Customer customer = customerService.getCustomerById(customerId); 
+		Customer customer = CustomerUseCase.getCustomerById(customerId); 
 
-		Customer newCustomerData = customerService.updateCustomer(customerId, documentNumber, customerName, customerEmail);
+		Customer newCustomerData = CustomerUseCase.updateCustomer(customerId, documentNumber, customerName, customerEmail);
 
-		customer = customerService.getCustomerById(customerId);
+		customer = CustomerUseCase.getCustomerById(customerId);
 
 		assertThat(customer.getId()).isEqualTo(newCustomerData.getId());
 		assertThat(customer.getDocumentNumber().getDocumentNumber()).isEqualTo(newCustomerData.getDocumentNumber().getDocumentNumber());
@@ -365,18 +364,18 @@ public class CustomerServiceTest {
 	@Test
 	void givenInvalidNewCPF_thenRefusesUpdateCPF () throws Exception {
 		try {
-			CustomerService customerService = new CustomerService(manageCustomerPortUpdate);
+			CustomerUseCase CustomerUseCase = new CustomerUseCase(manageCustomerPortUpdate);
 
 			Long customerId = 10L;
 			String customerName = "Roberto Machado";
 			String customerEmail = "roberto.machado@bestmail.com";
 			String documentNumber = "90779778057";
 
-			Customer customer = customerService.getCustomerById(customerId); 
+			Customer customer = CustomerUseCase.getCustomerById(customerId); 
 
-			Customer newCustomerData = customerService.updateCustomer(customerId, documentNumber, customerName, customerEmail);
+			Customer newCustomerData = CustomerUseCase.updateCustomer(customerId, documentNumber, customerName, customerEmail);
 
-			customer = customerService.getCustomerById(customerId);
+			customer = CustomerUseCase.getCustomerById(customerId);
 		}catch (Exception e) {
 			assertThatExceptionOfType(ValidationException.class);
 			assertThat(e.getMessage()).contains("Invalid document number");
@@ -385,13 +384,13 @@ public class CustomerServiceTest {
 
 	@Test
 	void givenId_thenDeleteCustomer () {
-		CustomerService customerService = new CustomerService(manageCustomerPort);
+		CustomerUseCase CustomerUseCase = new CustomerUseCase(manageCustomerPort);
 		Boolean deleted = false;
 
 		try {
 			Long customerId = 10L;
-			deleted = customerService.deleteCustomer(customerId);
-			Customer customer = customerService.getCustomerById(customerId);
+			deleted = CustomerUseCase.deleteCustomer(customerId);
+			Customer customer = CustomerUseCase.getCustomerById(customerId);
 
 		} catch (NotFoundException e) {
 			assertThat(deleted).isTrue();
@@ -402,12 +401,12 @@ public class CustomerServiceTest {
 
 	@Test
 	void givenInexistentId_thenRefusesDeleteCustomer () {
-		CustomerService customerService = new CustomerService(manageCustomerPort);
+		CustomerUseCase CustomerUseCase = new CustomerUseCase(manageCustomerPort);
 		Boolean deleted = false;
 
 		try {
 			Long customerId = 20L;
-			deleted = customerService.deleteCustomer(customerId);
+			deleted = CustomerUseCase.deleteCustomer(customerId);
 		} catch (NotFoundException e) {
 			assertThatExceptionOfType(NotFoundException.class);
 		} catch (Exception e) {

@@ -10,10 +10,10 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.perisatto.fiapprj.menuguru.domain.entities.order.Order;
+import com.perisatto.fiapprj.menuguru.domain.entities.order.OrderItem;
+import com.perisatto.fiapprj.menuguru.domain.entities.order.OrderStatus;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.ValidationException;
-import com.perisatto.fiapprj.menuguru.hexagonal.order.domain.model.Order;
-import com.perisatto.fiapprj.menuguru.hexagonal.order.domain.model.OrderItem;
-import com.perisatto.fiapprj.menuguru.hexagonal.order.domain.model.OrderStatus;
 
 @ActiveProfiles(value = "test")
 public class OrderTest {

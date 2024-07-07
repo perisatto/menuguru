@@ -11,27 +11,28 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.perisatto.fiapprj.menuguru.application.interfaces.CustomerRepository;
+import com.perisatto.fiapprj.menuguru.application.interfaces.OrderRepository;
+import com.perisatto.fiapprj.menuguru.application.interfaces.ProductRepository;
+import com.perisatto.fiapprj.menuguru.application.usecases.OrderUseCase;
+import com.perisatto.fiapprj.menuguru.domain.entities.customer.CPF;
+import com.perisatto.fiapprj.menuguru.domain.entities.customer.Customer;
+import com.perisatto.fiapprj.menuguru.domain.entities.order.Order;
+import com.perisatto.fiapprj.menuguru.domain.entities.order.OrderItem;
+import com.perisatto.fiapprj.menuguru.domain.entities.order.OrderStatus;
+import com.perisatto.fiapprj.menuguru.domain.entities.product.Product;
+import com.perisatto.fiapprj.menuguru.domain.entities.product.ProductType;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.NotFoundException;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.ValidationException;
-import com.perisatto.fiapprj.menuguru.hexagonal.customer.domain.model.CPF;
-import com.perisatto.fiapprj.menuguru.hexagonal.customer.domain.model.Customer;
-import com.perisatto.fiapprj.menuguru.hexagonal.order.domain.model.Order;
-import com.perisatto.fiapprj.menuguru.hexagonal.order.domain.model.OrderItem;
-import com.perisatto.fiapprj.menuguru.hexagonal.order.domain.model.OrderStatus;
-import com.perisatto.fiapprj.menuguru.hexagonal.order.domain.service.OrderService;
-import com.perisatto.fiapprj.menuguru.hexagonal.order.port.out.ManageOrderPort;
-import com.perisatto.fiapprj.menuguru.hexagonal.order.port.out.OrderCustomerPort;
-import com.perisatto.fiapprj.menuguru.hexagonal.order.port.out.OrderProductPort;
-import com.perisatto.fiapprj.menuguru.hexagonal.product.domain.model.Product;
-import com.perisatto.fiapprj.menuguru.hexagonal.product.domain.model.ProductType;
+
 
 @ActiveProfiles(value = "test")
-public class OrderServiceTest {
+public class OrderUseCaseTest {
 
-	private OrderCustomerPort orderCustomerPort = new OrderCustomerPort() {
+	private CustomerRepository orderCustomerPort = new CustomerRepository() {
 
 		@Override
-		public Customer getCustomer(Long id) throws Exception {
+		public Optional<Customer> getCustomerById(Long id) throws Exception {
 			if(id==10L) {
 				String customerName = "Roberto Machado";
 				String customerEmail = "roberto.machado@bestmail.com";
@@ -39,17 +40,47 @@ public class OrderServiceTest {
 
 				CPF customerCPF = new CPF(documentNumber);
 				Customer customer = new Customer(10L, customerCPF, customerName, customerEmail);
-				return customer;
+				return Optional.of(customer);
 			} else {
 				throw new NotFoundException("tst-0000", "Customer not found");
 			}
 		}
 
-	};
-	private OrderProductPort orderProductPort = new OrderProductPort() {
+		@Override
+		public Customer createCustomer(Customer customer) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
 		@Override
-		public Product getProduct(Long id) throws Exception {
+		public Optional<Customer> getCustomerByCPF(CPF customerDocument) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<Customer> updateCustomer(Customer customer) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Boolean deleteCustomer(Long customerId) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Set<Customer> findAll(Integer limit, Integer offset) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+	};
+	private ProductRepository orderProductPort = new ProductRepository() {
+
+		@Override
+		public Optional<Product> getProductById(Long id) throws Exception {
 			String productName = "X-Bacon";
 			ProductType productType = ProductType.LANCHE;
 			String productDescription = "O x-bacon é um sanduíche irresistível que une o sabor intenso do bacon crocante com queijo derretido"
@@ -59,11 +90,35 @@ public class OrderServiceTest {
 			String productImage = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";			
 			Product product = new Product(productName, productType, productDescription, productPrice, productImage);
 			product.setId(1L);
-			return product;
+			return Optional.of(product);
+		}
+
+		@Override
+		public Product createProduct(Product product) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<Product> updateProduct(Product product) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Boolean deleteProduct(Long id) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Set<Product> findAll(Integer limit, Integer offset, String type) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 	};
-	private ManageOrderPort manageOrderPort = new ManageOrderPort() {
+	private OrderRepository manageOrderPort = new OrderRepository() {
 
 		@Override
 		public Order createOrder(Order order) throws Exception {
@@ -136,10 +191,9 @@ public class OrderServiceTest {
 		orderItems.add(firstItem);
 		orderItems.add(secondItem);	
 
+		OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
 
-		OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
-
-		Order order = orderService.createOrder(customerId, orderItems);
+		Order order = OrderUseCase.createOrder(customerId, orderItems);
 
 		assertThat(order.getId()).isGreaterThan(0);
 		assertThat(order.getStatus()).isEqualTo(OrderStatus.PENDENTE_PAGAMENTO);
@@ -163,9 +217,9 @@ public class OrderServiceTest {
 		orderItems.add(secondItem);	
 
 
-		OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
+		OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
 
-		Order order = orderService.createOrder(null, orderItems);
+		Order order = OrderUseCase.createOrder(null, orderItems);
 
 		assertThat(order.getId()).isGreaterThan(0);
 		assertThat(order.getStatus()).isEqualTo(OrderStatus.PENDENTE_PAGAMENTO);
@@ -189,9 +243,9 @@ public class OrderServiceTest {
 			orderItems.add(secondItem);	
 
 
-			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
+			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
 
-			Order order = orderService.createOrder(customerId, orderItems);
+			Order order = OrderUseCase.createOrder(customerId, orderItems);
 
 			assertTrue(false);
 		} catch (Exception e) {
@@ -216,9 +270,9 @@ public class OrderServiceTest {
 			orderItems.add(secondItem);	
 
 
-			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
+			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
 
-			Order order = orderService.createOrder(customerId, orderItems);
+			Order order = OrderUseCase.createOrder(customerId, orderItems);
 
 			assertTrue(false);
 		} catch (Exception e) {
@@ -243,9 +297,9 @@ public class OrderServiceTest {
 			orderItems.add(secondItem);	
 
 
-			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
+			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
 
-			Order order = orderService.createOrder(customerId, orderItems);
+			Order order = OrderUseCase.createOrder(customerId, orderItems);
 
 			assertTrue(false);
 		} catch (Exception e) {
@@ -271,9 +325,9 @@ public class OrderServiceTest {
 			orderItems.add(secondItem);	
 
 
-			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
+			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
 
-			Order order = orderService.createOrder(customerId, orderItems);
+			Order order = OrderUseCase.createOrder(customerId, orderItems);
 
 			assertTrue(false);
 		} catch (Exception e) {
@@ -299,9 +353,9 @@ public class OrderServiceTest {
 			orderItems.add(secondItem);	
 
 
-			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
+			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
 
-			Order order = orderService.createOrder(customerId, orderItems);			
+			Order order = OrderUseCase.createOrder(customerId, orderItems);			
 
 			assertTrue(false);
 		} catch (Exception e) {
@@ -313,9 +367,9 @@ public class OrderServiceTest {
 	void givenValidOrderId_thenRetrieveOrder() throws Exception {
 		Long orderId = 1L;
 
-		OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
+		OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
 
-		Order order = orderService.getOrder(orderId);
+		Order order = OrderUseCase.getOrder(orderId);
 
 		assertThat(order.getId()).isEqualTo(orderId);
 		assertThat(order.getItems()).isNotEmpty();
@@ -327,9 +381,9 @@ public class OrderServiceTest {
 		try { 
 			Long orderId = 2L;
 
-			OrderService orderService = new OrderService(orderCustomerPort, orderProductPort, manageOrderPort);
+			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
 
-			Order order = orderService.getOrder(orderId);
+			Order order = OrderUseCase.getOrder(orderId);
 
 			assertTrue(false);
 		}catch (Exception e) {
