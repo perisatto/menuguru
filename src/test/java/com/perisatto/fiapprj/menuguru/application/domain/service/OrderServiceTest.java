@@ -11,19 +11,19 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.perisatto.fiapprj.menuguru.customer.domain.model.CPF;
-import com.perisatto.fiapprj.menuguru.customer.domain.model.Customer;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.NotFoundException;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.ValidationException;
-import com.perisatto.fiapprj.menuguru.order.domain.model.Order;
-import com.perisatto.fiapprj.menuguru.order.domain.model.OrderItem;
-import com.perisatto.fiapprj.menuguru.order.domain.model.OrderStatus;
-import com.perisatto.fiapprj.menuguru.order.domain.service.OrderService;
-import com.perisatto.fiapprj.menuguru.order.port.out.ManageOrderPort;
-import com.perisatto.fiapprj.menuguru.order.port.out.OrderCustomerPort;
-import com.perisatto.fiapprj.menuguru.order.port.out.OrderProductPort;
-import com.perisatto.fiapprj.menuguru.product.domain.model.Product;
-import com.perisatto.fiapprj.menuguru.product.domain.model.ProductType;
+import com.perisatto.fiapprj.menuguru.hexagonal.customer.domain.model.CPF;
+import com.perisatto.fiapprj.menuguru.hexagonal.customer.domain.model.Customer;
+import com.perisatto.fiapprj.menuguru.hexagonal.order.domain.model.Order;
+import com.perisatto.fiapprj.menuguru.hexagonal.order.domain.model.OrderItem;
+import com.perisatto.fiapprj.menuguru.hexagonal.order.domain.model.OrderStatus;
+import com.perisatto.fiapprj.menuguru.hexagonal.order.domain.service.OrderService;
+import com.perisatto.fiapprj.menuguru.hexagonal.order.port.out.ManageOrderPort;
+import com.perisatto.fiapprj.menuguru.hexagonal.order.port.out.OrderCustomerPort;
+import com.perisatto.fiapprj.menuguru.hexagonal.order.port.out.OrderProductPort;
+import com.perisatto.fiapprj.menuguru.hexagonal.product.domain.model.Product;
+import com.perisatto.fiapprj.menuguru.hexagonal.product.domain.model.ProductType;
 
 @ActiveProfiles(value = "test")
 public class OrderServiceTest {

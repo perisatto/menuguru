@@ -10,12 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.perisatto.fiapprj.menuguru.customer.domain.model.CPF;
-import com.perisatto.fiapprj.menuguru.customer.domain.model.Customer;
-import com.perisatto.fiapprj.menuguru.customer.domain.service.CustomerService;
-import com.perisatto.fiapprj.menuguru.customer.port.out.ManageCustomerPort;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.NotFoundException;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.ValidationException;
+import com.perisatto.fiapprj.menuguru.hexagonal.customer.domain.model.CPF;
+import com.perisatto.fiapprj.menuguru.hexagonal.customer.domain.model.Customer;
+import com.perisatto.fiapprj.menuguru.hexagonal.customer.domain.service.CustomerService;
+import com.perisatto.fiapprj.menuguru.hexagonal.customer.port.out.ManageCustomerPort;
 
 @ActiveProfiles(value = "test")
 public class CustomerServiceTest {

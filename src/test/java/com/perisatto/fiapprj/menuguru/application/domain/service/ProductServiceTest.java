@@ -11,10 +11,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.perisatto.fiapprj.menuguru.handler.exceptions.NotFoundException;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.ValidationException;
-import com.perisatto.fiapprj.menuguru.product.domain.model.Product;
-import com.perisatto.fiapprj.menuguru.product.domain.model.ProductType;
-import com.perisatto.fiapprj.menuguru.product.domain.service.ProductService;
-import com.perisatto.fiapprj.menuguru.product.port.out.ManageProductPort;
+import com.perisatto.fiapprj.menuguru.hexagonal.product.domain.model.Product;
+import com.perisatto.fiapprj.menuguru.hexagonal.product.domain.model.ProductType;
+import com.perisatto.fiapprj.menuguru.hexagonal.product.domain.service.ProductService;
+import com.perisatto.fiapprj.menuguru.hexagonal.product.port.out.ManageProductPort;
 
 @ActiveProfiles(value = "test")
 public class ProductServiceTest {

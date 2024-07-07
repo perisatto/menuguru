@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.perisatto.fiapprj.menuguru.handler.exceptions.ValidationException;
-import com.perisatto.fiapprj.menuguru.order.domain.model.Order;
-import com.perisatto.fiapprj.menuguru.order.domain.model.OrderItem;
-import com.perisatto.fiapprj.menuguru.order.domain.model.OrderStatus;
+import com.perisatto.fiapprj.menuguru.hexagonal.order.domain.model.Order;
+import com.perisatto.fiapprj.menuguru.hexagonal.order.domain.model.OrderItem;
+import com.perisatto.fiapprj.menuguru.hexagonal.order.domain.model.OrderStatus;
 
 @ActiveProfiles(value = "test")
 public class OrderTest {
