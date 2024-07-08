@@ -12,11 +12,13 @@ import org.apache.logging.log4j.Logger;
 
 import com.perisatto.fiapprj.menuguru.application.interfaces.CustomerRepository;
 import com.perisatto.fiapprj.menuguru.application.interfaces.OrderRepository;
+import com.perisatto.fiapprj.menuguru.application.interfaces.PaymentProcessor;
 import com.perisatto.fiapprj.menuguru.application.interfaces.ProductRepository;
 import com.perisatto.fiapprj.menuguru.domain.entities.customer.Customer;
 import com.perisatto.fiapprj.menuguru.domain.entities.order.Order;
 import com.perisatto.fiapprj.menuguru.domain.entities.order.OrderItem;
 import com.perisatto.fiapprj.menuguru.domain.entities.order.OrderStatus;
+import com.perisatto.fiapprj.menuguru.domain.entities.payment.Payment;
 import com.perisatto.fiapprj.menuguru.domain.entities.product.Product;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.NotFoundException;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.ValidationException;
@@ -27,11 +29,13 @@ public class OrderUseCase {
 	private final OrderRepository orderRepository;
 	private final CustomerRepository customerRepository;
 	private final ProductRepository productRepository;
+	private final PaymentProcessor paymentProcessor;
 
-	public OrderUseCase(OrderRepository orderRepository, CustomerRepository customerRepository, ProductRepository productRepository) {
+	public OrderUseCase(OrderRepository orderRepository, CustomerRepository customerRepository, ProductRepository productRepository, PaymentProcessor paymentProcessor) {
 		this.orderRepository = orderRepository;
 		this.customerRepository = customerRepository;
 		this.productRepository = productRepository;
+		this.paymentProcessor = paymentProcessor;
 	}
 
 	public Order createOrder(Long customerId, Set<OrderItem> orderItems) throws Exception {
@@ -61,7 +65,15 @@ public class OrderUseCase {
 
 		Order newOrder = new Order(OrderStatus.PENDENTE_PAGAMENTO, customerId, items);
 		newOrder = orderRepository.createOrder(newOrder);
-		logger.info("New order created.");
+		logger.info("New order created. Generating payment.");
+		
+		PaymentUseCase paymentUseCase = new PaymentUseCase(paymentProcessor);
+		Payment payment = paymentUseCase.createPayment(newOrder);
+		newOrder.setPaymentIdentifier(payment.getId());
+		newOrder.setPaymentLocation(payment.getPaymentLocation());
+		orderRepository.updateOrder(newOrder);
+		
+		logger.info("Payment generated.");
 		return newOrder;
 	}
 

@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.perisatto.fiapprj.menuguru.application.interfaces.CustomerRepository;
 import com.perisatto.fiapprj.menuguru.application.interfaces.OrderRepository;
+import com.perisatto.fiapprj.menuguru.application.interfaces.PaymentProcessor;
 import com.perisatto.fiapprj.menuguru.application.interfaces.ProductRepository;
 import com.perisatto.fiapprj.menuguru.application.usecases.OrderUseCase;
 import com.perisatto.fiapprj.menuguru.domain.entities.customer.CPF;
@@ -20,6 +21,7 @@ import com.perisatto.fiapprj.menuguru.domain.entities.customer.Customer;
 import com.perisatto.fiapprj.menuguru.domain.entities.order.Order;
 import com.perisatto.fiapprj.menuguru.domain.entities.order.OrderItem;
 import com.perisatto.fiapprj.menuguru.domain.entities.order.OrderStatus;
+import com.perisatto.fiapprj.menuguru.domain.entities.payment.Payment;
 import com.perisatto.fiapprj.menuguru.domain.entities.product.Product;
 import com.perisatto.fiapprj.menuguru.domain.entities.product.ProductType;
 import com.perisatto.fiapprj.menuguru.handler.exceptions.NotFoundException;
@@ -173,6 +175,16 @@ public class OrderUseCaseTest {
 			return null;
 		}		
 	};
+	
+	private PaymentProcessor paymentProcessor = new PaymentProcessor() {
+		
+		@Override
+		public Payment createPayment(Payment payment) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	};
+	
 
 	@Test
 	void givenValidParameters_thenCreateOrder() throws Exception {
@@ -191,7 +203,7 @@ public class OrderUseCaseTest {
 		orderItems.add(firstItem);
 		orderItems.add(secondItem);	
 
-		OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
+		OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort, paymentProcessor);
 
 		Order order = OrderUseCase.createOrder(customerId, orderItems);
 
@@ -217,7 +229,7 @@ public class OrderUseCaseTest {
 		orderItems.add(secondItem);	
 
 
-		OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
+		OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort, paymentProcessor);
 
 		Order order = OrderUseCase.createOrder(null, orderItems);
 
@@ -243,7 +255,7 @@ public class OrderUseCaseTest {
 			orderItems.add(secondItem);	
 
 
-			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
+			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort, paymentProcessor);
 
 			Order order = OrderUseCase.createOrder(customerId, orderItems);
 
@@ -270,7 +282,7 @@ public class OrderUseCaseTest {
 			orderItems.add(secondItem);	
 
 
-			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
+			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort, paymentProcessor);
 
 			Order order = OrderUseCase.createOrder(customerId, orderItems);
 
@@ -297,7 +309,7 @@ public class OrderUseCaseTest {
 			orderItems.add(secondItem);	
 
 
-			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
+			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort, paymentProcessor);
 
 			Order order = OrderUseCase.createOrder(customerId, orderItems);
 
@@ -325,7 +337,7 @@ public class OrderUseCaseTest {
 			orderItems.add(secondItem);	
 
 
-			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
+			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort, paymentProcessor);
 
 			Order order = OrderUseCase.createOrder(customerId, orderItems);
 
@@ -353,7 +365,7 @@ public class OrderUseCaseTest {
 			orderItems.add(secondItem);	
 
 
-			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
+			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort, paymentProcessor);
 
 			Order order = OrderUseCase.createOrder(customerId, orderItems);			
 
@@ -367,7 +379,7 @@ public class OrderUseCaseTest {
 	void givenValidOrderId_thenRetrieveOrder() throws Exception {
 		Long orderId = 1L;
 
-		OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
+		OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort, paymentProcessor);
 
 		Order order = OrderUseCase.getOrder(orderId);
 
@@ -381,7 +393,7 @@ public class OrderUseCaseTest {
 		try { 
 			Long orderId = 2L;
 
-			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort);
+			OrderUseCase OrderUseCase = new OrderUseCase(manageOrderPort, orderCustomerPort, orderProductPort, paymentProcessor);
 
 			Order order = OrderUseCase.getOrder(orderId);
 

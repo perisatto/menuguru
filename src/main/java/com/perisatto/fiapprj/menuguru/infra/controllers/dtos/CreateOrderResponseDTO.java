@@ -10,6 +10,7 @@ public class CreateOrderResponseDTO {
 	private Long customerId;
 	private Double totalPrice;
 	private String status;
+	private String qrData;
 	
 	@JsonAlias(value = "items")
 	private Set<OrderItemDTO> items = new LinkedHashSet<>();
@@ -53,4 +54,12 @@ public class CreateOrderResponseDTO {
 	public void setItems(Set<OrderItemDTO> items) {
 		this.items = items;
 	}
+
+	public String getQrData() {
+		return qrData;
+	}
+
+	public void setQrData(String qrData) {
+		this.qrData = qrData;
+	}	
 }

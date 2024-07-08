@@ -53,8 +53,9 @@ public class OrderRestController {
 			OrderItem item = new OrderItem(requestItem.getId(), null, requestItem.getQuantity());
 			orderItems.add(item);
 		}		
-		Order order = orderUseCase.createOrder(createRequest.getCustomerId(), orderItems);
+		Order order = orderUseCase.createOrder(createRequest.getCustomerId(), orderItems);		
 		CreateOrderResponseDTO response = orderMapper.map(order, CreateOrderResponseDTO.class);
+		response.setQrData(order.getPaymentLocation());
 		URI location = new URI("/orders/" + response.getId());
 		return ResponseEntity.status(HttpStatus.CREATED).location(location).body(response);
 	}

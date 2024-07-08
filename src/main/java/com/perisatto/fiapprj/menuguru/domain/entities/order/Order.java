@@ -22,7 +22,8 @@ public class Order {
 	private String paymentIdentifier;
 	private Date readyToPrepare;
 	private Duration waitingTime;
-
+	private String paymentLocation;
+	
 
 	public Order(OrderStatus orderStatus, Long customerId, Set<OrderItem> orderItems) throws Exception {
 		if(!validate(orderStatus, customerId, orderItems)) {
@@ -123,5 +124,13 @@ public class Order {
 		}
 
 		return valid;
+	}
+
+	public String getPaymentLocation() {
+		return paymentLocation;
+	}
+
+	public void setPaymentLocation(String paymentLocation) {
+		this.paymentLocation = paymentLocation;
 	}
 }
