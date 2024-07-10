@@ -14,6 +14,7 @@ import com.perisatto.fiapprj.menuguru.infra.persistences.repositories.OrderPersi
 
 @Configuration
 public class OrderConfig {
+
 	
 	@Bean
 	OrderUseCase orderUseCase(OrderRepository orderRepository, CustomerRepository customerRepository, ProductRepository productRepository, PaymentProcessor paymentProcessor) {

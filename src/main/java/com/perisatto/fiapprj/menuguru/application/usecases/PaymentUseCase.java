@@ -12,7 +12,7 @@ public class PaymentUseCase {
 		this.paymentProcessor = paymentProcessor;
 	}
 
-	public Payment createPayment(Order order) {
+	public Payment createPayment(Order order) throws Exception {
 		Payment payment = new Payment(order);		
 		paymentProcessor.createPayment(payment);
 		return payment;

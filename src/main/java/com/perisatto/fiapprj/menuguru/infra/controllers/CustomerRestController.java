@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,7 +26,6 @@ import com.perisatto.fiapprj.menuguru.infra.controllers.dtos.GetCustomerResponse
 import com.perisatto.fiapprj.menuguru.infra.controllers.dtos.UpdateCustomerRequestDTO;
 
 @RestController
-@RequestMapping("/menuguru/v1")
 public class CustomerRestController {
 	
 	private final CustomerUseCase customerUseCase;

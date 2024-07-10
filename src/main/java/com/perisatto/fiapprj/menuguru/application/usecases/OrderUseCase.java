@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -152,7 +151,7 @@ public class OrderUseCase {
 		}
 	}
 
-	public Order checkoutOrder(Long id, String paymentIdentifier) throws Exception {
+	public Order confirmPayment(Long id) throws Exception {
 		logger.info("Checkouting order...");
 		Optional<Order> order = orderRepository.getOrder(id);
 		if(order.isPresent()) {
@@ -163,17 +162,9 @@ public class OrderUseCase {
 				throw new ValidationException("ordr-2006", "Order is already checkout");
 			}
 
-			try {
-				UUID.fromString(paymentIdentifier);
-			} catch (IllegalArgumentException e) {
-				logger.warn("Payment identifier is not a UUID format");
-				throw new ValidationException("ordr-2007", "Payment Identifier invalid");
-			}
-
 			Date currentDate = new Date();
 			checkoutOrder.setReadyToPrepare(currentDate);
 			checkoutOrder.setStatus(OrderStatus.RECEBIDO);
-			checkoutOrder.setPaymentIdentifier(paymentIdentifier);
 
 			Optional<Order> updatedOrder = orderRepository.updateOrder(checkoutOrder);
 			if(updatedOrder.isPresent()) {

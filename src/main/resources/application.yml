@@ -6,6 +6,9 @@ spring:
   jackson:
     deserialization:
       fail-on-unknown-properties: true     
+server:
+  servlet:
+    context-path: "/menuguru/v1"      
 ---
 spring:
   config:
@@ -20,6 +23,10 @@ spring:
     password: ${MYSQL_PASSWORD}      
   jpa:
     hibernate:      naming:        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  payment:
+    userId: ${PAYMENT_USER_ID}
+    accessToken: ${PAYMENT_ACCESS_TOKEN}
+    hostWebhook: ${PAYMENT_HOST_WEBHOOK}
 ---
 spring:
   config:
@@ -35,7 +42,11 @@ spring:
   jpa:
     hibernate:
       naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl        
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  payment:
+    userId: ${PAYMENT_USER_ID}
+    accessToken: ${PAYMENT_ACCESS_TOKEN}    
+    hostWebhook: ${PAYMENT_HOST_WEBHOOK}            
 ---        
 spring:
   config:
@@ -51,3 +62,7 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: none      
+  payment:
+    userId: ${PAYMENT_USER_ID}
+    accessToken: ${PAYMENT_ACCESS_TOKEN}   
+    hostWebhook: ${PAYMENT_HOST_WEBHOOK}   

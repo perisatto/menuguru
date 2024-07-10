@@ -80,7 +80,7 @@ public class OrderRepositoryJpa implements OrderRepository {
 	}
 
 	public Set<Order> listPreparationQueue(Integer limit, Integer page) throws Exception {
-		Pageable pageable = PageRequest.of(page, limit, Sort.by("readyToPrepare"));
+		Pageable pageable = PageRequest.of(page, limit, Sort.by("idOrderStatus").descending().and(Sort.by("readyToPrepare")));
 		Page<OrderEntity> orders = orderRepository.findByIdOrderStatusBetween(OrderStatus.RECEBIDO.getId(), OrderStatus.PRONTO.getId(), pageable);
 		
 		Set<Order> orderSet = new LinkedHashSet<Order>();

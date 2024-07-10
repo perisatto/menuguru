@@ -36,6 +36,21 @@ spec:
                 secretKeyRef:
                   name: menuguru-secret
                   key: mysql_password
+            - name: PAYMENT_USER_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: menuguru-api-config
+                  key: payment_user_id
+            - name: PAYMENT_ACCESS_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: menuguru-api-config
+                  key: payment_access_token                  
+            - name: PAYMENT_HOST_WEBHOOK
+              valueFrom:
+                configMapKeyRef:
+                  name: menuguru-api-config
+                  key: payment_host_webhook   
           ports:
             - containerPort: 8080      
           readinessProbe:

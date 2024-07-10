@@ -1115,7 +1115,7 @@ paths:
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
                   instance: /orders    
-  /orders/{orderId}/checkout:
+  /orders/{orderId}/confirmPayment:
     post:
       tags:
         - orders

@@ -16,6 +16,9 @@ public class RequestQrCodeDTO {
 	
 	private Set<RequestQrCodeItemDTO> items = new LinkedHashSet<RequestQrCodeItemDTO>();
 	
+	@JsonProperty("notification_url")
+	private String notificationUrl;
+	
 	private String title;
 	
 	@JsonProperty("total_amount")
@@ -43,6 +46,14 @@ public class RequestQrCodeDTO {
 
 	public void setItems(Set<RequestQrCodeItemDTO> items) {
 		this.items = items;
+	}
+	
+	public String getNotificationUrl() {
+		return notificationUrl;
+	}
+
+	public void setNotificationUrl(String notificationUrl) {
+		this.notificationUrl = notificationUrl;
 	}
 
 	public String getTitle() {
