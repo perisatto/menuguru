@@ -4,8 +4,9 @@ image:
   tag: "fase2"
 
 service:
-  type: NodePort
+  type: LoadBalancer
   port: 8080
+  cloud: aws
 
 autoscaling:
   enabled: true
@@ -14,10 +15,10 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
   
-mysqlUrl: menuguru-db-svc
+mysqlUrl: menuguru.cu44urmo6uwb.us-east-1.rds.amazonaws.com
 mysqlPort: 3306
-mysql_user: cm9vdA==
+mysql_user: YWRtaW4=
 mysql_password: Skx5NUVZYm9id0NUdkl1WUZPY3g=
-payment_userId: !!string 1891840516
-payment_accessToken: "Bearer APP_USR-8181028333104133-070721-241b964d5fe3126fabf1bdc44feaffde-1891840516"
-payment_hostWebhook: https://webhook.site/dee62f36-c973-4eb3-920e-65f3d1793f36/menuguru/v1/orders/11/checkout
+payment_userId: MTg5MTg0MDUxNg==
+payment_accessToken: QmVhcmVyIEFQUF9VU1ItODE4MTAyODMzMzEwNDEzMy0wNzA3MjEtMjQxYjk2NGQ1ZmUzMTI2ZmFiZjFiZGM0NGZlYWZmZGUtMTg5MTg0MDUxNg==
+payment_hostWebhook: http://a28336924a9234a0bbeb1818dfd6675f-5036755897fafc39.elb.us-east-1.amazonaws.com:8080

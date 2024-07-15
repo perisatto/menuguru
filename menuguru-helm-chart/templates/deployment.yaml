@@ -38,13 +38,13 @@ spec:
                   key: mysql_password
             - name: PAYMENT_USER_ID
               valueFrom:
-                configMapKeyRef:
-                  name: menuguru-api-config
+                secretKeyRef:
+                  name: menuguru-secret
                   key: payment_user_id
             - name: PAYMENT_ACCESS_TOKEN
               valueFrom:
-                configMapKeyRef:
-                  name: menuguru-api-config
+                secretKeyRef:
+                  name: menuguru-secret
                   key: payment_access_token                  
             - name: PAYMENT_HOST_WEBHOOK
               valueFrom:
@@ -55,13 +55,13 @@ spec:
             - containerPort: 8080      
           readinessProbe:
             httpGet:
-              path: /actuator/health
+              path: /menuguru/v1/actuator/health
               port: 8080
             initialDelaySeconds: 30
             periodSeconds: 10
           livenessProbe:
             httpGet:
-              path: /actuator/health
+              path: /menuguru/v1/actuator/health
               port: 8080
             initialDelaySeconds: 30
             periodSeconds: 60
