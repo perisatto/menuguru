@@ -7,7 +7,7 @@ externalDocs:
   description: Find out more about the project
   url: https://github.com/perisatto/menuguru
 servers:
-  - url: /menuguru/v1
+  - url: http://localhost:8080/menuguru/v1
 tags:
   - name: customers
     description: Manage the customer register
@@ -1461,7 +1461,12 @@ components:
         status:
           allOf:
             - $ref: "#/components/schemas/OrderStatus"
-          readOnly: true          
+          readOnly: true  
+        qrData:
+          type: string
+          description: Text that represent a QRCode used to pay the order
+          readOnly: true
+          example: "00020101021243650016COM.MERCADOLIBRE0201306361932747e-662a-4702-b04b-12c7799d03025204000053039865802BR5909Test Test6009SAO PAULO62070503***6304077C"
         items:
           type: array
           description: List of products included in the order
