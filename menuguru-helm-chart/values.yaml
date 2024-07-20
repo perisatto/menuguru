@@ -1,24 +1,30 @@
+#Caso esteja executando com o Autoscaling desabilitado, especifique o número de replicas
 replicaCount: 1
 
 image:
   tag: "fase2"
 
 service:
+  #Para executar de forma local, altere o "type" para "NodePort"
   type: LoadBalancer
   port: 8080
   cloud: aws
 
 autoscaling:
+  #Para habilitar o autoscaling, altere a variavel "enable" para "true" ("replicaCount" será ignorado)
   enabled: true
   minReplicas: 1
   maxReplicas: 10
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
   
+#Configurações da instância MySQL
 mysqlUrl: menuguru.cu44urmo6uwb.us-east-1.rds.amazonaws.com
 mysqlPort: 3306
 mysql_user: YWRtaW4=
 mysql_password: Skx5NUVZYm9id0NUdkl1WUZPY3g=
+
+#Configurações do provedor de pagamentos (Mercado Pago)
 payment_userId: MTg5MTg0MDUxNg==
 payment_accessToken: QmVhcmVyIEFQUF9VU1ItODE4MTAyODMzMzEwNDEzMy0wNzA3MjEtMjQxYjk2NGQ1ZmUzMTI2ZmFiZjFiZGM0NGZlYWZmZGUtMTg5MTg0MDUxNg==
 payment_hostWebhook: http://a36beb7055ac345368e4fc4ad936d877-63ec8ddccb8a0cd4.elb.us-east-1.amazonaws.com:8080
