@@ -38,7 +38,10 @@ Abstraímos aqui os componentes do Kubernetes (ControlPlane, etcd, etc) para foc
 
 # Guia para execução do projeto
 
-## Docker
+* Fase 1: [Docker](#docker)
+* Fase 2: [Kubernetes](#kubernetes)
+
+## <a name="docker">Docker</a>
 
 ### Pré-Requisitos
 
@@ -63,7 +66,7 @@ Com as variáveis de ambiente configuradas é hora de iniciar a aplicação util
 
 Verificando no painel de controle do Docker você poderá checar se a aplicação está pronta para uso.
 
-## Kubernetes
+## <a name="kubernetes">Kubernetes</a>
 
 Este projeto foi estruturado para ser implantado em Kubernetes através do uso de Helm Chart.
 
