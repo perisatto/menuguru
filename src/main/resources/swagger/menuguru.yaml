@@ -1426,10 +1426,10 @@ components:
     OrderCheckout:
       type: object
       properties:
-        paymentIdentifier:
+        action:
           type: string
-          description: Identifies the payment process the was realized in the Payment system.
-          format: uuid
+          description: Identifies the payment action performed by the payment processor.
+          example: "payment.created"
     OrderStatus:
       type: string
       description: identifies the phase of orders production
