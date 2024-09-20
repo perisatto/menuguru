@@ -2,7 +2,7 @@
 replicaCount: 1
 
 image:
-  tag: "fase2"
+  tag: "latest"
 
 service:
   #Para executar de forma local, altere o "type" para "NodePort"
