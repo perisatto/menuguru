@@ -61,7 +61,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           
   Publish:
-    needs: Build
+    #needs: Build
     #if: startsWith(github.ref_name, 'master')
     runs-on: ubuntu-latest
     steps:      
