@@ -19,12 +19,12 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
   
 #Configurações da instância MySQL
-mysqlUrl: menuguru.colutxzfkhpm.us-east-1.rds.amazonaws.com
-mysqlPort: 3306
-mysql_user: cm9vdA==
-mysql_password: Skx5NUVZYm9id0NUdkl1WUZPY3g=
+mysqlUrl: ${MYSQL_URL}
+mysqlPort: ${MYSQL_PORT}
+mysql_user: ${MYSQL_USER}
+mysql_password: ${MYSQL_PASSWORD}
 
 #Configurações do provedor de pagamentos (Mercado Pago)
-payment_userId: MTg5MTg0MDUxNg==
-payment_accessToken: QmVhcmVyIEFQUF9VU1ItODE4MTAyODMzMzEwNDEzMy0wNzA3MjEtMjQxYjk2NGQ1ZmUzMTI2ZmFiZjFiZGM0NGZlYWZmZGUtMTg5MTg0MDUxNg==
-payment_hostWebhook: http://ae4c7e1e49a8149bfb99b3e3c589c1c4-cbfc09fb0678a7ed.elb.us-east-1.amazonaws.com:8080
+payment_userId: ${PAYMENT_USER_ID}
+payment_accessToken: ${PAYMENT_ACCESS_TOKEN}
+payment_hostWebhook: ${PAYMENT_WEBHOOK}

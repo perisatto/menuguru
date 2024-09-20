@@ -64,6 +64,14 @@ jobs:
     needs: Build
     if: startsWith(github.ref_name, 'master')
     runs-on: ubuntu-latest
+    env:
+      MYSQL_URL: ${{secrets.MYSQL_URL}}
+      MYSQL_PORT: ${{secrets.MYSQL_PORT}}
+      MYSQL_USER: ${{secrets.MYSQL_USER}}
+      MYSQL_PASSWORD: ${{secrets.MYSQL_PASSWORD}}
+      PAYMENT_USER_ID: ${{secrets.PAYMENT_USER_ID}}
+      PAYMENT_ACCESS_TOKEN: ${{secrets.PAYMENT_ACCESS_TOKEN}}
+      PAYMENT_WEBHOOK: ${{secrets.PAYMENT_WEBHOOK}}      
     steps:
       - run: echo "Publish"
       
