@@ -1,0 +1,42 @@
+name: pipeline
+run-name: ${{ github.actor }} is running a new build.
+
+on: [push, workflow_dispatch]
+
+jobs:       
+  Deploy:
+    if: startsWith(github.ref_name, 'master')
+    needs: Publish
+    runs-on: ubuntu-latest
+    env:
+      MYSQL_URL: '${{secrets.MYSQL_URL}}'
+      MYSQL_PORT: '${{secrets.MYSQL_PORT}}'
+      MYSQL_USER: '${{secrets.MYSQL_USER}}'
+      MYSQL_PASSWORD: '${{secrets.MYSQL_PASSWORD}}'
+      PAYMENT_USER_ID: '${{secrets.PAYMENT_USER_ID}}'
+      PAYMENT_ACCESS_TOKEN: '${{secrets.PAYMENT_ACCESS_TOKEN}}'
+      PAYMENT_WEBHOOK: '${{secrets.PAYMENT_WEBHOOK}}'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name menuguru --region ${{ secrets.AWS_REGION }}
+
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+      - name: Deploy to EKS using Helm
+        run: |
+          helm upgrade --install skull --set mysqlUrl=$MYSQL_URL --set mysqlPort=$MYSQL_PORT --set mysql_user=$MYSQL_USER --set mysql_password=$MYSQL_PASSWORD \
+          --set payment_userId=$PAYMENT_USER_ID --set payment_accessToken=$PAYMENT_ACCESS_TOKEN --set payment_hostWebhook=$PAYMENT_WEBHOOK ./menuguru-helm-chart    
