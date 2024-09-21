@@ -1,7 +1,7 @@
 name: pipeline
 run-name: ${{ github.actor }} is running a new build.
 
-on: [push, workflow_dispatch]
+on: [workflow_dispatch]
 
 jobs:       
   Deploy:
