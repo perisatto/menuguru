@@ -6,7 +6,6 @@ on: [workflow_dispatch]
 jobs:       
   Deploy:
     if: startsWith(github.ref_name, 'master')
-    needs: Publish
     runs-on: ubuntu-latest
     env:
       MYSQL_URL: '${{secrets.MYSQL_URL}}'
