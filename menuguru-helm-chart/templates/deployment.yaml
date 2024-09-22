@@ -59,7 +59,7 @@ spec:
             - name: AWS_REGION
               valueFrom:
                 configMapKeyRef:
-                  name: menuguru-secret
+                  name: menuguru-api-config
                   key: aws_region                  
           ports:
             - containerPort: 8080      
