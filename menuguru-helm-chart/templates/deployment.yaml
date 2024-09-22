@@ -51,12 +51,12 @@ spec:
                 configMapKeyRef:
                   name: menuguru-api-config
                   key: payment_host_webhook
-            - name:
+            - name: AWS_COGNITO_USER_POOL_ID
               valueFrom:
                 secretKeyRef:
                   name: menuguru-secret
                   key: aws_cognito_user_pool_id
-            - name:
+            - name: AWS_REGION
               valueFrom:
                 secretKeyRef:
                   name: menuguru-secret
