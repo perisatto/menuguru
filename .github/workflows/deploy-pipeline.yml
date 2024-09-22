@@ -6,7 +6,7 @@ on: [workflow_dispatch]
 jobs:       
   Deploy:
     runs-on: ubuntu-latest
-    env:
+    env:    
       MYSQL_URL: '${{secrets.MYSQL_URL}}'
       MYSQL_PORT: '${{secrets.MYSQL_PORT}}'
       MYSQL_USER: '${{secrets.MYSQL_USER}}'
@@ -14,13 +14,14 @@ jobs:
       PAYMENT_USER_ID: '${{secrets.PAYMENT_USER_ID}}'
       PAYMENT_ACCESS_TOKEN: '${{secrets.PAYMENT_ACCESS_TOKEN}}'
       PAYMENT_WEBHOOK: '${{secrets.PAYMENT_WEBHOOK}}'
+      AWS_COGNITO_USER_POOL_ID: '${{secrets.AWS_COGNITO_USER_POOL_ID}}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
-        with:
+        with:        
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
@@ -37,4 +38,5 @@ jobs:
       - name: Deploy to EKS using Helm
         run: |
           helm upgrade --install skull --set mysqlUrl=$MYSQL_URL --set mysqlPort=$MYSQL_PORT --set mysql_user=$MYSQL_USER --set mysql_password=$MYSQL_PASSWORD \
-          --set payment_userId=$PAYMENT_USER_ID --set payment_accessToken=$PAYMENT_ACCESS_TOKEN --set payment_hostWebhook=$PAYMENT_WEBHOOK ./menuguru-helm-chart    
+          --set payment_userId=$PAYMENT_USER_ID --set payment_accessToken=$PAYMENT_ACCESS_TOKEN --set payment_hostWebhook=$PAYMENT_WEBHOOK ./menuguru-helm-chart \
+          --set aws_cognito_user_pool_id=$AWS_COGNITO_USER_POOL_ID    

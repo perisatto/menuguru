@@ -28,3 +28,4 @@ mysql_password: ${MYSQL_PASSWORD}
 payment_userId: ${PAYMENT_USER_ID}
 payment_accessToken: ${PAYMENT_ACCESS_TOKEN}
 payment_hostWebhook: ${PAYMENT_WEBHOOK}
+aws_cognito_user_pool_id: ${AWS_COGNITO_USER_POOL_ID}
