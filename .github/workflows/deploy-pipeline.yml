@@ -35,8 +35,8 @@ jobs:
       - name: Install Helm
         run: |
           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-
-      - name: Deploy to EKS using Helm
+      - run: echo $AWS_COGNITO_USER_POOL_ID && echo $AWS_REGION
+      - name: Deploy to EKS using Helm        
         run: |
           helm upgrade --install skull --set mysqlUrl=$MYSQL_URL --set mysqlPort=$MYSQL_PORT --set mysql_user=$MYSQL_USER --set mysql_password=$MYSQL_PASSWORD \
           --set payment_userId=$PAYMENT_USER_ID --set payment_accessToken=$PAYMENT_ACCESS_TOKEN --set payment_hostWebhook=$PAYMENT_WEBHOOK ./menuguru-helm-chart \
