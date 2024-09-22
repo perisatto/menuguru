@@ -39,5 +39,5 @@ jobs:
       - name: Deploy to EKS using Helm        
         run: |
           helm upgrade --install skull --set mysqlUrl=$MYSQL_URL --set mysqlPort=$MYSQL_PORT --set mysql_user=$MYSQL_USER --set mysql_password=$MYSQL_PASSWORD \
-          --set payment_userId=$PAYMENT_USER_ID --set payment_accessToken=$PAYMENT_ACCESS_TOKEN --set payment_hostWebhook=$PAYMENT_WEBHOOK ./menuguru-helm-chart \
-          --set aws_cognito_user_pool_id=$AWS_COGNITO_USER_POOL_ID --set aws_region=$AWS_REGION    
+          --set payment_userId=$PAYMENT_USER_ID --set payment_accessToken=$PAYMENT_ACCESS_TOKEN --set payment_hostWebhook=$PAYMENT_WEBHOOK \
+          --set aws_cognito_user_pool_id=$AWS_COGNITO_USER_POOL_ID --set aws_region=$AWS_REGION ./menuguru-helm-chart
