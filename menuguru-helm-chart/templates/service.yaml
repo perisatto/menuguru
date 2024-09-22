@@ -1,11 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: menuguru-api-svc   
+  name: menuguru-api-svc
 spec:
   selector:
     menuguru.fiapprj.perisatto.com/name: service 
   type: {{ .Values.service.type }}
+  {{ if eq .Values.service.type "LoadBalancer" }}
+  {{ if eq .Values.service.cloud "aws" }}
+  loadBalancerClass: service.k8s.aws/nlb
+  {{ end }}
+  {{ end }}        
   ports:
     - protocol: TCP
       port: {{ .Values.service.port }}
