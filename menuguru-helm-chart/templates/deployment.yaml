@@ -50,7 +50,17 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: menuguru-api-config
-                  key: payment_host_webhook   
+                  key: payment_host_webhook
+            - name:
+              valueFrom:
+                secretKeyRef:
+                  name: menuguru-secret
+                  key: aws_cognito_user_pool_id
+            - name:
+              valueFrom:
+                secretKeyRef:
+                  name: menuguru-secret
+                  key: aws_region                  
           ports:
             - containerPort: 8080      
           readinessProbe:
