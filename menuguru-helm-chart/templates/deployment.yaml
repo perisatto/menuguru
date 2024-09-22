@@ -58,7 +58,7 @@ spec:
                   key: aws_cognito_user_pool_id
             - name: AWS_REGION
               valueFrom:
-                secretKeyRef:
+                configMapKeyRef:
                   name: menuguru-secret
                   key: aws_region                  
           ports:
