@@ -7,7 +7,7 @@ externalDocs:
   description: Find out more about the project
   url: https://github.com/perisatto/menuguru
 servers:
-  - url: http://localhost:8080/menuguru/v1
+  - url: /menuguru/v1
 tags:
   - name: customers
     description: Manage the customer register
@@ -176,7 +176,9 @@ paths:
                   type: about:blank
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
-                  instance: /customers      
+                  instance: /customers
+      security: 
+        - authorization: []
   /customers/{customerId}:
     get:
       tags:
@@ -246,6 +248,8 @@ paths:
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
                   instance: /customers
+      security: 
+        - authorization: []                  
     patch:
       tags:
         - customers
@@ -318,7 +322,9 @@ paths:
                   type: about:blank
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
-                  instance: /customers/1                   
+                  instance: /customers/1           
+      security: 
+        - authorization: []                  
     delete:
       tags:
         - customers
@@ -372,6 +378,8 @@ paths:
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
                   instance: /customers
+      security: 
+        - authorization: []                  
   /customersByCPF/{documentNumber}:
     get:
       tags:
@@ -441,7 +449,9 @@ paths:
                   type: about:blank
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
-                  instance: /customers                  
+                  instance: /customers   
+      security: 
+        - authorization: []                  
   /products:
     post:
       tags:
@@ -522,6 +532,8 @@ paths:
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
                   instance: /products
+      security: 
+        - authorization: []                  
     get:
       tags:
         - products
@@ -611,6 +623,8 @@ paths:
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
                   instance: /products      
+      security: 
+        - authorization: []                  
   /products/{productId}:
     get:
       tags:
@@ -680,6 +694,8 @@ paths:
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
                   instance: /products
+      security: 
+        - authorization: []                  
     patch:
       tags:
         - products
@@ -752,7 +768,9 @@ paths:
                   type: about:blank
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
-                  instance: /products                  
+                  instance: /products        
+      security: 
+        - authorization: []                  
     delete:
       tags:
         - products
@@ -806,6 +824,8 @@ paths:
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
                   instance: /products
+      security: 
+        - authorization: []                  
   /orders:   
     post:
       tags:
@@ -882,6 +902,8 @@ paths:
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
                   instance: /orders
+      security: 
+        - authorization: []                  
     get:
       tags:
         - orders
@@ -965,6 +987,8 @@ paths:
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
                   instance: /orders    
+      security: 
+        - authorization: []                  
   /orders/{orderId}:
     get:
       tags:
@@ -1034,6 +1058,8 @@ paths:
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
                   instance: /orders
+      security: 
+        - authorization: []                  
     patch:
       tags:
         - orders
@@ -1115,6 +1141,8 @@ paths:
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
                   instance: /orders    
+      security: 
+        - authorization: []                  
   /orders/{orderId}/confirmPayment:
     post:
       tags:
@@ -1256,7 +1284,9 @@ paths:
                   type: about:blank
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
-                  instance: /orders/2/cancel  
+                  instance: /orders/2/cancel 
+      security: 
+        - authorization: []                  
   /preparationQueue:
     get:
       tags:
@@ -1340,7 +1370,9 @@ paths:
                   type: about:blank
                   tittle: Internal Server Error
                   detail: A error ocurred during the operation. Please refer to application log for details
-                  instance: /preparationQueue   
+                  instance: /preparationQueue
+      security: 
+        - authorization: []                  
 components:
   schemas:
     TypeIdCustomer:
@@ -1544,3 +1576,7 @@ components:
             type: string
             description: String containing a URI reference that identifies the specific occurrence of the problem
             example: /customers/1
+  securitySchemes:
+    authorization:
+      type: http
+      scheme: bearer
