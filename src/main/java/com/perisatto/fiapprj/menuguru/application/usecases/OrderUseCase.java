@@ -9,9 +9,12 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.perisatto.fiapprj.menuguru.application.interfaces.CustomerRepository;
 import com.perisatto.fiapprj.menuguru.application.interfaces.OrderRepository;
 import com.perisatto.fiapprj.menuguru.application.interfaces.PaymentProcessor;
+import com.perisatto.fiapprj.menuguru.application.interfaces.PaymentRepository;
 import com.perisatto.fiapprj.menuguru.application.interfaces.ProductRepository;
 import com.perisatto.fiapprj.menuguru.domain.entities.customer.Customer;
 import com.perisatto.fiapprj.menuguru.domain.entities.order.Order;
@@ -29,12 +32,15 @@ public class OrderUseCase {
 	private final CustomerRepository customerRepository;
 	private final ProductRepository productRepository;
 	private final PaymentProcessor paymentProcessor;
+	private final PaymentRepository paymentRepository;
 
-	public OrderUseCase(OrderRepository orderRepository, CustomerRepository customerRepository, ProductRepository productRepository, PaymentProcessor paymentProcessor) {
+	public OrderUseCase(OrderRepository orderRepository, CustomerRepository customerRepository, ProductRepository productRepository, 
+			PaymentProcessor paymentProcessor, PaymentRepository paymentRepository) {
 		this.orderRepository = orderRepository;
 		this.customerRepository = customerRepository;
 		this.productRepository = productRepository;
 		this.paymentProcessor = paymentProcessor;
+		this.paymentRepository = paymentRepository;
 	}
 
 	public Order createOrder(Long customerId, Set<OrderItem> orderItems) throws Exception {
@@ -66,9 +72,8 @@ public class OrderUseCase {
 		newOrder = orderRepository.createOrder(newOrder);
 		logger.info("New order created. Generating payment.");
 		
-		PaymentUseCase paymentUseCase = new PaymentUseCase(paymentProcessor);
+		PaymentUseCase paymentUseCase = new PaymentUseCase(paymentProcessor, paymentRepository);
 		Payment payment = paymentUseCase.createPayment(newOrder);
-		newOrder.setPaymentIdentifier(payment.getId());
 		newOrder.setPaymentLocation(payment.getPaymentLocation());
 		orderRepository.updateOrder(newOrder);
 		
@@ -151,7 +156,7 @@ public class OrderUseCase {
 		}
 	}
 
-	public Order confirmPayment(Long id) throws Exception {
+	public Order confirmPayment(Long id, String paymentData) throws Exception {
 		logger.info("Checkouting order...");
 		Optional<Order> order = orderRepository.getOrder(id);
 		if(order.isPresent()) {
@@ -165,6 +170,23 @@ public class OrderUseCase {
 			Date currentDate = new Date();
 			checkoutOrder.setReadyToPrepare(currentDate);
 			checkoutOrder.setStatus(OrderStatus.RECEBIDO);
+			
+			ObjectMapper mapper = new ObjectMapper();
+			String paymentId = "";
+			try {
+				JsonNode jsonNode = mapper.readTree(paymentData);		
+				paymentId = jsonNode.get("data").get("id").textValue();		
+			}catch (Exception e) {
+				throw new ValidationException("ordr-2010", "Invalid payment id");
+			}			
+			
+			PaymentUseCase paymentUseCase = new PaymentUseCase(paymentProcessor, paymentRepository);
+			
+			if(!paymentUseCase.registerPayment(paymentData)) {
+				throw new ValidationException("ordr-2020", "Paymet register fail");
+			}
+			
+			checkoutOrder.setPaymentIdentifier(paymentId);			
 
 			Optional<Order> updatedOrder = orderRepository.updateOrder(checkoutOrder);
 			if(updatedOrder.isPresent()) {

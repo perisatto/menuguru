@@ -94,7 +94,7 @@ public class OrderRestController {
 		ChecktoutOrderResponseDTO response = new ChecktoutOrderResponseDTO();
 		PaymentConfirmJsonParser paymentConfirmJsonParser = new PaymentConfirmJsonParser();
 		if(paymentConfirmJsonParser.isPaymentCreated(checkoutRequest)) {
-			Order checkoutedOrder = orderUseCase.confirmPayment(orderId);
+			Order checkoutedOrder = orderUseCase.confirmPayment(orderId, checkoutRequest);
 			response.setStatus(checkoutedOrder.getStatus().toString());			
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(response);
