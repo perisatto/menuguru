@@ -48,7 +48,7 @@ Abstraímos aqui os componentes do Kubernetes (ControlPlane, etcd, etc) para foc
 
 ### Banco de dados
 
-Por ter os dados bem estruturados e sem alterações significantes previstas na evolução do projeto, o banco de dados relacional funciona muito bem para atingir os objetivos do projeto, não havendo necessidade de se optar por outros tipos de banco de dados.
+Por ter os dados bem estruturados e sem alterações significantes previstas na evolução do projeto, o banco de dados relacional funciona muito bem para atingir os objetivos do projeto, não havendo necessidade de se optar por outros tipos de banco de dados. Foi adicionado também um banco de dados de documentos que entra para armazenar as informações relativas à pagamentos, possibilitando receber informações de diversos provedores e armazená-las em um único repositório independente do formato.
 
 Ainda assim entendemos que em um cenário com volume de requisições para gravações e consultas (o que não é o caso deste sistema de controle de pedidos de restaurante) poderíamos utilizar um banco de dados Colunar, mantendo a visão mais estruturada dos dados e aumentando a performance do projeto.
 
