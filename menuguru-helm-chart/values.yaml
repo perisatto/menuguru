@@ -30,3 +30,8 @@ payment_accessToken: ${PAYMENT_ACCESS_TOKEN}
 payment_hostWebhook: ${PAYMENT_WEBHOOK}
 aws_cognito_user_pool_id: ${AWS_COGNITO_USER_POOL_ID64}
 aws_region: ${AWS_REGION}
+
+#Configurações da instância MongoDB
+mongodb_user: ${MONGODB_USER}
+mongodb_password: ${MONGODB_PASSWORD}
+mongodb_url: ${MONGODB_URL}
