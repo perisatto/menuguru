@@ -12,9 +12,11 @@ public class PaymentUseCase {
 	
 	static final Logger logger = LogManager.getLogger(PaymentUseCase.class);
 	private final PaymentProcessor paymentProcessor;	
+	private final PaymentRepository paymentRepository;
 	
 	public PaymentUseCase(PaymentProcessor paymentProcessor, PaymentRepository paymentRepository) {
 		this.paymentProcessor = paymentProcessor;
+		this.paymentRepository = paymentRepository;
 	}
 
 	public Payment createPayment(Order order) throws Exception {
@@ -24,12 +26,8 @@ public class PaymentUseCase {
 	}
 
 	public Boolean registerPayment(String paymentData) {
-		logger.info("Registering payment...");
-		
-		
-		
+		logger.info("Registering payment...");		
+		paymentRepository.registerPayment(paymentData);
 		return true;
-	}
-	
-	
+	}	
 }
