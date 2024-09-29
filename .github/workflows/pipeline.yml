@@ -111,7 +111,10 @@ jobs:
       PAYMENT_ACCESS_TOKEN: '${{secrets.PAYMENT_ACCESS_TOKEN}}'
       PAYMENT_WEBHOOK: '${{secrets.PAYMENT_WEBHOOK}}'
       AWS_COGNITO_USER_POOL_ID64: ${{ secrets.AWS_COGNITO_USER_POOL_ID64 }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}      
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      MONGODB_USER: '${{secrets.MONGODB_USER}}'
+      MONGODB_PASSWORD: '${{secrets.MONGODB_PASSWORD}}'
+      MONGODB_URL: '${{secrets.MONGODB_URL}}'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -136,4 +139,5 @@ jobs:
         run: |
           helm upgrade --install skull --set mysqlUrl=$MYSQL_URL --set mysqlPort=$MYSQL_PORT --set mysql_user=$MYSQL_USER --set mysql_password=$MYSQL_PASSWORD \
           --set payment_userId=$PAYMENT_USER_ID --set payment_accessToken=$PAYMENT_ACCESS_TOKEN --set payment_hostWebhook=$PAYMENT_WEBHOOK \
-          --set aws_cognito_user_pool_id=$AWS_COGNITO_USER_POOL_ID64 --set aws_region=$AWS_REGION ./menuguru-helm-chart
+          --set aws_cognito_user_pool_id=$AWS_COGNITO_USER_POOL_ID64 --set aws_region=$AWS_REGION --set mongodb_user=$MONGODB_USER \
+          --set mongodb_password=$MONGODB_PASSWORD --set mongodb_url=$MONGODB_URL ./menuguru-helm-chart
