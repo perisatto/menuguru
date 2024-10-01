@@ -114,3 +114,5 @@ Para facilitar o entendimento da sequencia de execução das operações das API
 Para demonstrar a arquitetura do projeto e a execução do mesmo em ambiente AWS, disponibilizamos o video no link abaixo com a explicação do projeto e de sua execução.
 
 * [YouTube](https://youtu.be/0e_d6BQKFJQ)
+
+.
